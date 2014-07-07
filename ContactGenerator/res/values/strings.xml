@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ContactGenerator</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+	<string name="your_comment">Contact Name</string>
+	<string name="send">Commit</string>
+	<string name="add_contact">Add as contact</string>
+	<string name="seetexts">See texts</string>
+	<string name="seecalls">See calls</string>
+	<string name="enter_name">Enter name (mandatory):</string>
+	<string name="enter_number">Enter number (mandatory):</string>
+	<string name="insert_db">Create this contact</string>
+	
+	
+</resources>
