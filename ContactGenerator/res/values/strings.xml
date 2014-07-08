@@ -12,6 +12,10 @@
 	<string name="enter_name">Enter name (mandatory):</string>
 	<string name="enter_number">Enter number (mandatory):</string>
 	<string name="insert_db">Create this contact</string>
+	<string name="see_cons">See existing contacts</string>
+	<string name="see_noncons">View potential contacts to add</string>
+	<string name="update_db">Update databases (~30 seconds)</string>
+	
 	
 	
 </resources>

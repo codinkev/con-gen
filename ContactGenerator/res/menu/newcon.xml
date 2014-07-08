@@ -15,8 +15,5 @@
         android:orderInCategory="90"
         android:showAsAction="always">
     </item>
-        <!--android:showAsAction="never"
-        android:icon="@drawable/ic_action_refresh"
-        -->  
 
 </menu>

@@ -1,4 +1,4 @@
-package com.kevin.contactgenerator.Helpers;
+package com.kevin.contactgenerator.Utilities;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -16,24 +16,21 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 	
-	// Logcat cat
+	//singleton implementation
+	//http://www.androiddesignpatterns.com/2012/05/correctly-managing-your-sqlite-database.html
+	private static DatabaseHelper dbInstance;
+	
     private static final String LOG = "DatabaseHelper";
-
-    // Database Version
     private static final int DATABASE_VERSION = 1;
-
-    // Database Name
     private static final String DATABASE_NAME = "contactsManager";
 
     // Table Names
     private static final String TABLE_texts = "texts";
     private static final String TABLE_calls = "calls";
-    //the single-column table of all numbers from the texts/calls that aren't already contacts
-    //for displaying in the listview -- excludes existing contacts
     private static final String TABLE_noncontacts = "noncontacts";
-    //table for existing contacts (just the numbers/names here)
     private static final String TABLE_contacts = "contacts";
 
     // Common column names
@@ -51,10 +48,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     
     // contacts table - columns
     private static final String CONTACT_NAME = "name";
-
-
-    //see below website for handling this sqlite stuff properly
-    //http://www.sqlite.org/lang_createtable.html
     
     // Table Create Statements
     // texts table create statement
@@ -77,23 +70,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     	    + TABLE_contacts + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, " + NUMBER + " TEXT UNIQUE, " 
     	            + CONTACT_NAME + " TEXT" +")";
     
-    // other table create statements -- ones derived from other tables -- where put?
-    // only table all_num afaik -- create this by getting all distinct nums from text/call then 
-    // excluding those from contacts table
     private static final String CREATE_TABLE_noncontacts = "CREATE TABLE "
             + TABLE_noncontacts + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, " + NUMBER + " TEXT UNIQUE" + ")";
 
+    //prevent multiple instances across the activity lifecycle
+    //use this as the constructor
+    public static DatabaseHelper getInstance(Context context) {
+        if (dbInstance == null) {
+          dbInstance = new DatabaseHelper(context.getApplicationContext());
+        }
+        return dbInstance;
+      }
+    
+    
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        //is this bad practice?
+        //TEMP COMMENTED
         //onCreate(this.getWritableDatabase());
     }
     
-    //************************************************************************
-    //method to be called in oncreate of mainactivity to dump existing tables;
+ 
+    //method to be called in update to dump existing tables;
     //want them to be completely refreshed on startup since pulling system memory
-    //BETTER WAY TO HANDLE THIS??? need way to do incrememntal updates
-    //************************************************************************
     public void recreateTables() {
     	SQLiteDatabase db = this.getWritableDatabase();
     	
@@ -127,15 +125,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
     
-    //http://androidgreeve.blogspot.com/2014/01/android-sqlite-multiple-table-basics.html#.U4IYXqEjvQo
-    //http://stackoverflow.com/questions/1556930/sharing-sqlite-database-between-multiple-android-activities
-    //http://stackoverflow.com/questions/4234030/android-can-i-use-one-sqliteopenhelper-class-for-multiple-database-files
-    //http://stackoverflow.com/questions/6905524/using-singleton-design-pattern-for-sqlitedatabase
-    
     //then we have our CRUD operations for each model:
-    
     //create (insert) methods
-    public void insertNonContact(String number) /*throws Exception*/ { //NEEDS TO BE UNIQUECONSTRAINT EXCEPTION
+    //this method is called any time a text or call is inserted
+    public void insertNonContact(String number) /*throws Exception*/ { 
         SQLiteDatabase db = this.getWritableDatabase();
         //make sure number is not existing contact
         Cursor c = db.rawQuery("SELECT COUNT(NUMBER) as Count" +
@@ -152,10 +145,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	        ContentValues values = new ContentValues();
 	        values.put(NUMBER, number);
 	        // insert row
-	        try{
+	        try{ // may throw a unique constraint exception
 	        	db.insertOrThrow(TABLE_noncontacts, null, values);
 	        } catch (SQLException e) {
-	        	//WHAT IS LOG VS SYSTEM.OUT.PRINTLN
 	        	Log.e(DATABASE_NAME, e.toString()+" ("+number+")");
 	        }
 		}
@@ -170,13 +162,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         try{
         	db.insertOrThrow(TABLE_contacts, null, values);
         } catch (SQLException e) {
-        	//WHAT IS LOG VS SYSTEM.OUT.PRINTLN
         	Log.e(DATABASE_NAME, e.toString()+" ("+contact.getNumber()+")");
         }
     }
     
-    //can't have date type in the values.put???
-
     public void insertTexts(TextMsg textmsg) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -187,18 +176,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // insert row
         db.insert(TABLE_texts, null, values);
         
-        //FOR THIS TABLE, anytime one is inserted should also insert to noncontacts
+        //FOR THIS TABLE, any time one is inserted should also insert to noncontacts
         //since it checks if it should be there (if not a contact) 
-        //and has a unique constraint so will dedupe
-        //(issue with db probably being open/called both times???)
+        //and has a unique constraint so will de-dupe
         insertNonContact(textmsg.getNumber());
-        /*
-        try{
-        	insertNonContact(textmsg.getNumber());
-        } catch (Exception e) { 
-        	System.out.println("Error inserting"+textmsg.getNumber()); 
-        }
-        */
     }
     
     public void insertCalls(LoggedCall loggedcall) {
@@ -211,26 +192,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // insert row
         db.insert(TABLE_calls, null, values);
         
-        //FOR THIS TABLE, anytime one is inserted should also insert to noncontacts
+        //FOR THIS TABLE, any time one is inserted should also insert to noncontacts
         //since it checks if it should be there (if not a contact) 
-        //and has a unique constraint so will dedupe
-        //(issue with db probably being open/called both times???)
+        //and has a unique constraint so will de-dupe
         insertNonContact(loggedcall.getNumber());
-        /*
-        try{
-        	insertNonContact(loggedcall.getNumber());
-        } catch (Exception e) { 
-        	System.out.println("Error inserting"+loggedcall.getNumber()); 
-        }
-        */
     }
     
-    //fetch (read) methods
-    //will never need to retrieve specific calls/texts etc unless changes happen later...
-    //so for now just grab everything from each table based on number and return arraylist 
-    //however, also need way to grab ALL from each table, and possibly by date etc later on
-    //also by NAME for existing contacts if have multiple nums (later on...)
-    
+    //read methods
     //calls
     public ArrayList<LoggedCall> fetchCalls(String number) {
     	 SQLiteDatabase db = this.getWritableDatabase();
@@ -239,7 +207,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                  + " WHERE number=" 
                  + "'" + number + "'" + ";",
                  null);
- 		/* Get the indices of the columns we will need */
+ 		
  		int numberColumn = c.getColumnIndex("number");
  		int typeColumn = c.getColumnIndex("type");
  		int dateColumn = c.getColumnIndex("date");   
@@ -265,7 +233,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor c = db.rawQuery("SELECT number, type, date, duration " +
                 " FROM " + TABLE_calls + ";",   
                 null);
-		/* Get the indices of the columns we will need */
+	
 		int numberColumn = c.getColumnIndex("number");
 		int typeColumn = c.getColumnIndex("type");
 		int dateColumn = c.getColumnIndex("date");   
@@ -296,7 +264,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + " WHERE number=" 
                 + "'" + number + "'" + ";",
                 null);
-		/* Get the indices of the columns we will need */
+		
 		int numberColumn = c.getColumnIndex("number");
 		int contactColumn = c.getColumnIndex("contact");
 		int dateColumn = c.getColumnIndex("date");   
@@ -323,7 +291,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                " FROM " + TABLE_texts + ";",   
                //+ " ORDER BY date;",
                null);
-       /* Get the indices of the columns we will need */
+       
 		int numberColumn = c.getColumnIndex("number");
 		int contactColumn = c.getColumnIndex("contact");
 		int dateColumn = c.getColumnIndex("date");   
@@ -345,13 +313,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return textArray;
    }
    
+   //existing contacts
    public ArrayList<Contact> fetchAllContacts() {
        SQLiteDatabase db = this.getWritableDatabase();
        Cursor c = db.rawQuery("SELECT name, number " +
                " FROM " + TABLE_contacts + ";",   
                //+ " ORDER BY date;",
                null);
-       /* Get the indices of the columns we will need */
+      
 		int nameColumn = c.getColumnIndex("name");
 		int numberColumn = c.getColumnIndex("number");
 		ArrayList<Contact> contactArray = new ArrayList<Contact>();
@@ -375,7 +344,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                " FROM " + TABLE_noncontacts + ";",   
                //+ " ORDER BY date;",
                null);
-       /* Get the indices of the columns we will need */
+       
 		int numberColumn = c.getColumnIndex("number");
 		ArrayList<String> noncontactArray = new ArrayList<String>();
 		
@@ -389,27 +358,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		c.close();
 		return noncontactArray;
    }
-   
-    //probably no need to update since records are static...
-   //TODO -- future will possibly need way to update existing contacts
     
-    //delete methods: only needed for noncontacts... possibly need for existing contacts if debugging issues.
+   //delete methods: only needed for noncontacts... possibly need for existing contacts if debugging issues.
    public void deleteNonContact(String number) {
 	    SQLiteDatabase db = this.getWritableDatabase();
 	    db.delete(TABLE_noncontacts, NUMBER + " = "+"'"+number+"'",
 	           null);
 	}
    
-   //then our database close() method
+   //then our database close() method (use below link instead of current implementation?)
    //http://stackoverflow.com/questions/4557154/android-sqlite-db-when-to-close
    public void closeDB() {
        SQLiteDatabase db = this.getReadableDatabase();
        if (db != null && db.isOpen())
            db.close();
    }
-   
-   //re-opening after closing (verify this is right!!!)
-   //it is opened when getWritableDB or getReadableDB called...
-   //so i can close as leave activity and it will be re-opened if necessary by other methods in the activity
 
 }

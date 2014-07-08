@@ -1,4 +1,4 @@
-package com.kevin.contactgenerator.Models;
+package com.kevin.contactgenerator.Utilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,8 +6,9 @@ import java.util.List;
 import android.content.Context;
 import android.widget.ArrayAdapter;
 
-//where should this ideally be placed (in terms of package etc)
-//better way around this???
+/*
+ * provides adapters with a name attribute if we need to identify which is in use on LV click
+ */
 public class CustomAdapter<T> extends ArrayAdapter<T> {
 	
 	String name;

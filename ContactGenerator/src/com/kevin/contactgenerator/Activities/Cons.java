@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.view.Menu;
 
 import com.example.contactgenerator.R;
-import com.kevin.contactgenerator.Helpers.DatabaseHelper;
 import com.kevin.contactgenerator.Models.Contact;
+import com.kevin.contactgenerator.Utilities.DatabaseHelper;
 
 public class Cons extends Activity {
 	
@@ -19,9 +19,7 @@ public class Cons extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
 		//db should already be populated from first activity
-		
 	}
 	
 	@Override
