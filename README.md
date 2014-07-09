@@ -2,6 +2,7 @@ con-gen
 =======
 
 (Android app) -- Generate contacts using data available on your phone
+Common term - noncon or noncontact - means a number which is not a contact on phone but has data on phone (such as text/call)
 
 GENERAL OVERVIEW - accesses several content providers on phone (ContactsContract, CallLog, sms/inbox for text messages) 
 and then places this info in my own sqlite database
