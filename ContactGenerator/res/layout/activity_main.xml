@@ -7,40 +7,57 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
-    
-    <!-- SAVE FOR THE LAUNCHER WELCOME SCREEN
-    	ImageView
+
+    <!--
+    Have these buttons in the action bar instead  
+    <Button
+        android:id="@+id/see_noncons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/update_db"
+        android:layout_marginTop="24dp"
+        android:text="@string/see_noncons" />
+
+    <Button
+        android:id="@+id/see_cons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/see_noncons"
+        android:layout_below="@+id/see_noncons"
+        android:layout_marginTop="76dp"
+        android:text="@string/see_cons" />
+        
+             <TextView
+         android:id="@+id/tv2"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_centerHorizontal="true"
+         android:layout_marginTop="40dp"
+         android:text="@string/noncondef" />
+    -->
+
+    <ImageView
         android:id="@+id/imageView1"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/ic_launcher" /-->
+        android:layout_centerInParent="true"
+        android:src="@drawable/contactus" />
 
-       <Button
-           android:id="@+id/see_noncons"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:layout_alignLeft="@+id/update_db"
-           android:layout_marginTop="24dp"
-           android:text="@string/see_noncons" />
+    <Button
+        android:id="@+id/update_db"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/update_db" />
 
-       <Button
-           android:id="@+id/see_cons"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:layout_alignLeft="@+id/see_noncons"
-           android:layout_below="@+id/see_noncons"
-           android:layout_marginTop="76dp"
-           android:text="@string/see_cons" />
-
-       <Button
-           android:id="@+id/update_db"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:layout_below="@+id/see_cons"
-           android:layout_centerHorizontal="true"
-           android:layout_marginTop="85dp"
-           android:text="@string/update_db" />
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/hello_world" />
 
 </RelativeLayout>
