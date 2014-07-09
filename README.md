@@ -5,22 +5,24 @@ con-gen
 
 Common term - noncon or noncontact - means a number which is not a contact on phone but has data on phone (such as text/call)
 
-GENERAL OVERVIEW - accesses several content providers on phone (ContactsContract, CallLog, sms/inbox for text messages) 
-and then places this info in my own sqlite database (description of where content providers accessed below)
+GENERAL OVERVIEW - 
+  accesses several content providers on phone (ContactsContract, CallLog, sms/inbox for text messages) 
+    and then places this info in my own sqlite database (description of where content providers accessed below)
 
-Uses the info to find data associated with numbers that are not currently contacts and then gives you ability to see this information
-and decide if you want to make a contact out of it
+  Uses the info to find data associated with numbers that are not currently contacts and then gives you ability to see this information
+    and decide if you want to make a contact out of it
 
-Can also use the info to view and edit existing contacts
+  Can also use the info to view and edit existing contacts
 
 
 
-Motivating case: someone texts you their name so you can add them as a contact later but you forget.  This will help you see
-which numbers aren't contacts but have sent texts like that.  
+Motivating case: 
+  someone texts you their name so you can add them as a contact later but you forget.  This will help you see
+    which numbers aren't contacts but have sent texts like that.  
 
-App can also be used to manage texts/calls more easily, deleting unwanted information from the phone.
-
-Also will offer an incremental search to find texts if you know there is an important text but can't remember from whom.
+  App can also be used to manage texts/calls more easily, deleting unwanted information from the phone.
+  
+  Also will offer an incremental search to find texts if you know there is an important text but can't remember from whom.
 
 
 
