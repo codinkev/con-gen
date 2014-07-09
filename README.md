@@ -7,9 +7,9 @@ Common term - noncon or noncontact - means a number which is not a contact on ph
 
 GENERAL OVERVIEW - 
   accesses several content providers on phone (ContactsContract, CallLog, sms/inbox for text messages) 
-    and then places this info in my own sqlite database (description of where content providers accessed below)
+    and then places this info in my own sqlite database (description of where content providers accessed below).
   Uses the info to find data associated with numbers that are not currently contacts and then gives you ability to see this information
-    and decide if you want to make a contact out of it
+    and decide if you want to make a contact out of it.
   Can also use the info to view and edit existing contacts
 
 
