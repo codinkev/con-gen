@@ -21,6 +21,13 @@ Motivating case:
 
 
 
+TO USE: on startup, click VIEW POTENTIAL CONTACTS on actionbar to see a list of noncons.  Click a noncon to further explore the data available to describe this noncon (texts/calls).  On this same explorer view, click "add as contact" on actionbar to enter a name and number and insert to your actual contact list.
+
+From startup can also click VIEW EXISTING CONTACTS to see and edit current contacts on the phone (or take a picture to associate with this contact using camera API).
+
+On startup, for first launch (and subsequent desired refreshes) will need to hit "refresh database" to gather all text/call data and generate a list of noncons and existing contacts. (NOTE: refresh functionality currently commented out until better way to allow cancelling mid-refresh)
+
+
 ***OVERVIEW OF CLASSES - 
 
   in Activities section
