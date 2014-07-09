@@ -3,11 +3,11 @@ con-gen
 
 ContactGenerator (Android app) -- Generate contacts using data available on your phone
 
-Common term - noncon or noncontact - means a number which is not a contact on phone but has data on phone (such as text/call)
+Common term - noncon or noncontact - means a number which is not a contact on phone but has data on phone (such as texts/calls)
 
 GENERAL OVERVIEW - 
   accesses several content providers on phone (ContactsContract, CallLog, sms/inbox for text messages) 
-    and then places this info in my own sqlite database (description of where content providers accessed below).
+    and then places this info in a sqlite database (description of where content providers accessed below).
   Uses the info to identify numbers with texts/calls on phone that are not currently contacts (noncons) and then gives you ability to view all noncons and their associated data to ultimately convert these noncons to contacts if desired.
   Can also use the info to view and edit existing contacts.
 
