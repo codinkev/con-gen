@@ -49,7 +49,7 @@ public class Contact {
      * @return name of contact for listview display
      */
     public String toString() {
-        return this.name;
+        return ""+ this.name + " | " + this.number;
     }
 
 }

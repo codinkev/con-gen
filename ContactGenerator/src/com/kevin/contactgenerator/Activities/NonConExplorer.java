@@ -56,11 +56,11 @@ public class NonConExplorer extends ListActivity {
     EditText number_entry;
 
     /**
-     * onCreate - instantiate multiple adapters 
-     * want to be able to show texts or calls depending on what is clicked
+     * onCreate - instantiate multiple adapters want to be able to show texts or
+     * calls depending on what is clicked
      * 
-     * additionally, based on actionbar click, can hide listview and 
-     * display entry form for adding this noncon as a contact
+     * additionally, based on actionbar click, can hide listview and display
+     * entry form for adding this noncon as a contact
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +140,7 @@ public class NonConExplorer extends ListActivity {
 
     /**
      * Inflate the menu; this adds items to the action bar if it is present.
+     * 
      * @return boolean indicates if successful
      */
     @Override
@@ -150,6 +151,7 @@ public class NonConExplorer extends ListActivity {
 
     /**
      * Dictates behavior based on actionbar clicks
+     * 
      * @return boolean indicates if successful
      */
     @Override
@@ -181,13 +183,15 @@ public class NonConExplorer extends ListActivity {
         return true;
     }
 
-    // 
+    //
     /**
-     * physically adds a new contact to the phone accessible 
-     * from outside of application
+     * physically adds a new contact to the phone accessible from outside of
+     * application
      * 
-     * @param name the name of the contact being added
-     * @param number the number of the contact being added
+     * @param name
+     *            the name of the contact being added
+     * @param number
+     *            the number of the contact being added
      */
     private void addContact(String name, String number_field) {
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
@@ -220,14 +224,14 @@ public class NonConExplorer extends ListActivity {
         }
         sqldb = DatabaseHelper.getInstance(getApplicationContext());
         sqldb.deleteNonContact(number_field);
-        
+
     }
 
     /**
-     * hide/show methods for switching between entry methods and 
-     * text/call listviews depending on actionbar click
+     * hide/show methods for switching between entry methods and text/call
+     * listviews depending on actionbar click
      */
-    
+
     public void hideAddCon() {
         // don't make these elements visible until we are on the addcon
         // listadapter
@@ -257,7 +261,7 @@ public class NonConExplorer extends ListActivity {
      */
     public void onPause() {
         super.onPause();
-        //getActionBar().hide();
+        // getActionBar().hide();
     }
 
     public void onResume() {

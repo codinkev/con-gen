@@ -1,7 +1,5 @@
 package com.kevin.contactgenerator.Activities;
 
-//STARTUP SCREEN
-
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -32,12 +30,21 @@ import com.kevin.contactgenerator.Utilities.RefreshTables;
  * @version 1.0 7/8/2014
  */
 public class MainActivity extends Activity {
+    //https://developer.android.com/design/patterns/app-structure.html
+    //http://androidexample.com/Incomming_SMS_Broadcast_Receiver_-_Android_Example/index.php?view=article_discription&aid=62&aaid=87
+    //sms broadcast receiver info^
+    //http://stackoverflow.com/questions/12128331/how-to-change-fontfamily-of-textview-in-android
+    //change textview font styles... look at other ways too^
 
     Intent i;
     DatabaseHelper sqldb;
     Button see_cons;
     Button see_noncons;
     Button update_db;
+    
+    //specifies a thread interrupt for the update
+    //http://docs.oracle.com/javase/tutorial/essential/concurrency/interrupt.html
+    volatile boolean cancelUpdate;
     
     //used while refreshing database
     AlertDialog.Builder builder; 
@@ -122,9 +129,9 @@ public class MainActivity extends Activity {
         case R.id.action_seecons:
             Toast.makeText(this, "Showing contacts", Toast.LENGTH_SHORT)
                     .show();
-            //i = new Intent(MainActivity.this, Cons.class);
-            //System.out.println("*******SWITCHING*******");
-            //startActivity(i);
+            i = new Intent(MainActivity.this, Cons.class);
+            System.out.println("*******SWITCHING*******");
+            startActivity(i);
           
             break;
         // action bar option to see noncons

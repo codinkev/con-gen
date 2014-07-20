@@ -28,27 +28,29 @@ public final class R {
         public static final int ic_launcher=0x7f020001;
     }
     public static final class id {
-        public static final int action_addcontact=0x7f09000b;
-        public static final int action_seecalls=0x7f09000d;
-        public static final int action_seecons=0x7f090009;
-        public static final int action_seenoncons=0x7f09000a;
-        public static final int action_seetexts=0x7f09000c;
-        public static final int enter_name=0x7f090003;
-        public static final int imageView1=0x7f090000;
-        public static final int insert_db=0x7f090005;
-        public static final int invis_text=0x7f090008;
-        public static final int name_entry=0x7f090007;
-        public static final int nonContactList=0x7f090006;
-        public static final int number_entry=0x7f090004;
-        public static final int tv=0x7f090002;
-        public static final int update_db=0x7f090001;
+        public static final int action_addcontact=0x7f09000c;
+        public static final int action_seecalls=0x7f09000e;
+        public static final int action_seecons=0x7f09000a;
+        public static final int action_seenoncons=0x7f09000b;
+        public static final int action_seetexts=0x7f09000d;
+        public static final int contactList=0x7f090000;
+        public static final int enter_name=0x7f090004;
+        public static final int imageView1=0x7f090001;
+        public static final int insert_db=0x7f090006;
+        public static final int invis_text=0x7f090009;
+        public static final int name_entry=0x7f090008;
+        public static final int nonContactList=0x7f090007;
+        public static final int number_entry=0x7f090005;
+        public static final int tv=0x7f090003;
+        public static final int update_db=0x7f090002;
     }
     public static final class layout {
-        public static final int activity_main=0x7f030000;
-        public static final int activity_noncon_exp=0x7f030001;
-        public static final int activity_noncons=0x7f030002;
-        public static final int edittext_list_item=0x7f030003;
-        public static final int welcome_screen=0x7f030004;
+        public static final int activity_cons=0x7f030000;
+        public static final int activity_main=0x7f030001;
+        public static final int activity_noncon_exp=0x7f030002;
+        public static final int activity_noncons=0x7f030003;
+        public static final int edittext_list_item=0x7f030004;
+        public static final int welcome_screen=0x7f030005;
     }
     public static final class menu {
         public static final int mainnav=0x7f080000;
@@ -59,17 +61,17 @@ public final class R {
         public static final int action_settings=0x7f060001;
         public static final int add_contact=0x7f060005;
         public static final int app_name=0x7f060000;
-        public static final int condef=0x7f060009;
+        public static final int condef=0x7f060008;
         public static final int enter_name=0x7f06000d;
         public static final int enter_number=0x7f06000e;
         public static final int hello_world=0x7f060002;
         public static final int insert_db=0x7f06000f;
-        public static final int instructions=0x7f06000b;
-        public static final int noncondef=0x7f06000a;
+        public static final int instructions=0x7f06000a;
+        public static final int noncondef=0x7f060009;
         public static final int see_cons=0x7f060010;
         public static final int see_noncons=0x7f060011;
         public static final int seecalls=0x7f060007;
-        public static final int seecons=0x7f060008;
+        public static final int seecons=0x7f06000b;
         public static final int seenoncons=0x7f06000c;
         public static final int seetexts=0x7f060006;
         public static final int send=0x7f060004;
