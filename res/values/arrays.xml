@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="addConArray">
+        <item>Name (Mandatory)</item>
+        <item>Number (Mandatory)</item>
+        <item>Else... (later)</item>
+    </array>
+
+</resources>

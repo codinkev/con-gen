@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item android:title="@string/add_contact"
+        android:id="@+id/action_addcontact"
+        android:orderInCategory="110"
+        android:showAsAction="always">
+    </item>
+    <item android:title="@string/seetexts"
+        android:id="@+id/action_seetexts"
+        android:orderInCategory="100"
+        android:showAsAction="always">
+    </item>
+    <item android:title="@string/seecalls"
+        android:id="@+id/action_seecalls"
+        android:orderInCategory="90"
+        android:showAsAction="always">
+    </item>
+
+</menu>

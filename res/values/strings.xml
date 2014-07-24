@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ContactGenerator</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">ContactGenerator - Know your data</string>
+    <string name="your_comment">Contact Name</string>
+    <string name="send">Commit</string>
+    <string name="add_contact">Add as contact</string>
+    
+    <string name="seetexts">See texts</string>
+    <string name="seecalls">See calls</string>
+    
+    <string name="condef">Con = existing contact</string>
+    <string name="noncondef">NonCon = number w texts/calls, but not yet a contact</string>
+    <string name="instructions">Click a number to see its texts/calls</string>
+    
+    <string name="seecons">Existing contacts</string>
+    <string name="seenoncons">Potential contacts</string>
+    
+    <string name="enter_name">Enter name (mandatory):</string>
+    <string name="enter_number">Enter number (mandatory):</string>
+   
+    <string name="insert_db">Create this contact</string>
+    <string name="see_cons">See existing contacts</string>
+    <string name="see_noncons">View potential contacts to add</string>
+    <string name="update_db">Refresh database</string>
+
+</resources>
