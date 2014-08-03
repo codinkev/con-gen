@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item android:title="@string/seecons"
+        android:id="@+id/action_seecons"
+        android:orderInCategory="100"
+        android:showAsAction="always">
+    </item>
+    <item android:title="@string/seenoncons"
+        android:id="@+id/action_seenoncons"
+        android:orderInCategory="90"
+        android:showAsAction="always">
+    </item>
+
+</menu>
