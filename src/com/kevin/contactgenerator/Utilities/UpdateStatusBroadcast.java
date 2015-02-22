@@ -1,5 +1,6 @@
 package com.kevin.contactgenerator.Utilities;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,11 +20,17 @@ public class UpdateStatusBroadcast extends BroadcastReceiver {
     // where we are in the app
     // after starting service
     // http://www.grokkingandroid.com/android-tutorial-broadcastreceiver/
+    
+    Activity main = null;
+    public void setMainActivityHandler(Activity main){
+        this.main = main;
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         System.out.println("Broadcast indeed!");
         String message = intent.getExtras().getString("message");
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+        //Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+        ((MainActivity) this.main).setComplete(true);
     }
 }

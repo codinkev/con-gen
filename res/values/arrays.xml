@@ -6,5 +6,10 @@
         <item>Number (Mandatory)</item>
         <item>Else... (later)</item>
     </array>
+    
+    <array name="actions">
+        <item>Potential contacts</item>
+        <item>Existing contacts</item>
+    </array>
 
 </resources>

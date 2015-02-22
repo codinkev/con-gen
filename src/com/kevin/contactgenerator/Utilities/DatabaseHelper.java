@@ -526,9 +526,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public ArrayList<String> fetchAllNonContacts() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT number " + " FROM " + TABLE_noncontacts
-                + ";",
-        // + " ORDER BY date;",
+        Cursor c = db.rawQuery("SELECT z.number, count(z.number) as relevance_score " 
+        + " FROM " 
+        + " (SELECT y.number from texts y " 
+        + " UNION ALL" 
+        + " SELECT u.number from calls u) z"
+        + " GROUP BY z.number ORDER BY count(z.number) DESC",
                 null);
 
         int numberColumn = c.getColumnIndex("number");
@@ -541,6 +544,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } while (c.moveToNext());
         }
         c.close();
+ 
+        //sort the noncons by relevance (number of texts/calls)
+        //ArrayList<Integer> sortIndex = new ArrayList<Integer>();
+        //for (String noncon : noncontactArray) {
+        //    
+        //}
+        
         return noncontactArray;
     }
 

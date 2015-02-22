@@ -85,6 +85,9 @@ public class UpdateService extends IntentService {
         String message = "Testing";
         main_intent.putExtra("message", message);
         sendBroadcast(main_intent);
+        
+        //kill the progress dialog made in the async task (other way to do this?)
+        MainActivity.setComplete(true);
     }
     
     /**
@@ -147,7 +150,7 @@ public class UpdateService extends IntentService {
             String datehold = cursor.getString(4);
             String date = (new Date(Long.valueOf(datehold))).toString();
             String body = cursor.getString(14);
-            System.out.println("TESTING");
+            //System.out.println("TESTING");
             System.out.println("number: " + number + " contact: " + contact
                     + " date: " + date + " body: " + body);
 

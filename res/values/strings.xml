@@ -28,5 +28,8 @@
     <string name="see_cons">See existing contacts</string>
     <string name="see_noncons">View potential contacts to add</string>
     <string name="update_db">Refresh database</string>
+    
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 
 </resources>

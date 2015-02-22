@@ -1,14 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?><menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<?xml version="1.0" encoding="UTF-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item android:title="@string/seecons"
+<!--  placing both of these in a dropdown for now 
+    <item
         android:id="@+id/action_seecons"
         android:orderInCategory="100"
-        android:showAsAction="always">
+        android:showAsAction="always"
+        android:title="@string/seecons">
     </item>
-    <item android:title="@string/seenoncons"
+    <item
         android:id="@+id/action_seenoncons"
         android:orderInCategory="90"
-        android:showAsAction="always">
+        android:showAsAction="always"
+        android:title="@string/seenoncons">
     </item>
+-->
+
+    <item
+        android:id="@+id/action_updatedb"
+        android:orderInCategory="90"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/update_db">
+    </item>
+    
 
 </menu>
