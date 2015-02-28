@@ -19,28 +19,13 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.kevin.contactgenerator.Activities.WelcomeScreen"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name="com.kevin.contactgenerator.Activities.MainActivity"
             android:label="@string/app_name" 
             android:screenOrientation="portrait" >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.kevin.contactgenerator.Activities.NonContactList"
-            android:label="@string/instructions_noncon" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
@@ -50,13 +35,6 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>  
-        <activity
-            android:name="com.kevin.contactgenerator.Activities.ContactList"
-            android:label="@string/instructions_con" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
         <activity
             android:name="com.kevin.contactgenerator.Activities.ContactExplorer"
             android:label="@string/app_name" >

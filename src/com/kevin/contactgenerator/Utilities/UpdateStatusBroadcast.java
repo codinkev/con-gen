@@ -31,6 +31,5 @@ public class UpdateStatusBroadcast extends BroadcastReceiver {
         System.out.println("Broadcast indeed!");
         String message = intent.getExtras().getString("message");
         //Toast.makeText(context, message, Toast.LENGTH_LONG).show();
-        ((MainActivity) this.main).setComplete(true);
     }
 }

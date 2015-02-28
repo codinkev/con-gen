@@ -8,6 +8,7 @@
     </array>
     
     <array name="actions">
+        <item>Home Screen</item>
         <item>Potential contacts</item>
         <item>Existing contacts</item>
     </array>

@@ -1,24 +1,40 @@
-<?xml version="1.0" encoding="UTF-8"?><menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<?xml version="1.0" encoding="UTF-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item android:title="@string/add_contact"
-        android:id="@+id/action_addcontact"
-        android:orderInCategory="110"
-        android:showAsAction="always">
-    </item>
-    <item android:title="@string/delete_noncontact"
-        android:id="@+id/action_delnoncontact"
-        android:orderInCategory="120"
-        android:showAsAction="always">
-    </item>
-    <item android:title="@string/seetexts"
-        android:id="@+id/action_seetexts"
-        android:orderInCategory="100"
-        android:showAsAction="always">
-    </item>
-    <item android:title="@string/seecalls"
-        android:id="@+id/action_seecalls"
-        android:orderInCategory="90"
-        android:showAsAction="always">
-    </item>
+    <group android:id="@+id/main_menu_group" >
+        <item
+            android:id="@+id/actions"
+            android:icon="@drawable/actions"
+            android:orderInCategory="90"
+            android:showAsAction="ifRoom"
+            android:title="Options">
+            <menu>
+                <item
+                    android:id="@+id/action_addcontact"
+                    android:orderInCategory="110"
+                    android:showAsAction="always"
+                    android:title="@string/add_contact">
+                </item>
+                <item
+                    android:id="@+id/action_delnoncontact"
+                    android:orderInCategory="120"
+                    android:showAsAction="always"
+                    android:title="@string/delete_noncontact">
+                </item>
+                <item
+                    android:id="@+id/action_seetexts"
+                    android:orderInCategory="100"
+                    android:showAsAction="always"
+                    android:title="@string/seetexts">
+                </item>
+                <item
+                    android:id="@+id/action_seecalls"
+                    android:orderInCategory="90"
+                    android:showAsAction="always"
+                    android:title="@string/seecalls">
+                </item>
+            </menu>
+        </item>
+    </group>
 
 </menu>

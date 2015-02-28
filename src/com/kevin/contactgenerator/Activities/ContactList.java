@@ -3,6 +3,7 @@ package com.kevin.contactgenerator.Activities;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
@@ -27,7 +28,7 @@ import com.kevin.contactgenerator.Utilities.UpdateStatusBroadcast;
  * @author kevin
  * @version 1.0 7/8/2014
  */
-public class ContactList extends ListActivity {
+public class ContactList extends Fragment {
 
     DatabaseHelper sqldb;
     ArrayList<String> numberList;
@@ -40,6 +41,7 @@ public class ContactList extends ListActivity {
     /**
      * onCreate - instantiate and display the listview
      */
+/*
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,10 +73,11 @@ public class ContactList extends ListActivity {
         getMenuInflater().inflate(R.menu.blank, menu);
         return true;
     }
-
+*/
     /**
      * refresh LV if any changes made by re-fetching data
      */
+/*
     public void refreshLV() {
         sqldb = DatabaseHelper.getInstance(getApplicationContext());
 
@@ -90,10 +93,11 @@ public class ContactList extends ListActivity {
         getListView().setAdapter(numberAdapter);
 
     }
-
+*/
     /**
      * un/re-register receiver as this activity becomes in/active
      */
+/*
     public void onResume() {
         super.onResume();
 
@@ -109,5 +113,6 @@ public class ContactList extends ListActivity {
         super.onPause();
         unregisterReceiver(receiver);
     }
-
+*/
+    
 }

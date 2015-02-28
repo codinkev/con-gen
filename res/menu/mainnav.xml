@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-<!--  placing both of these in a dropdown for now 
+    <!--
+      placing both of these in a dropdown for now 
     <item
         android:id="@+id/action_seecons"
         android:orderInCategory="100"
@@ -14,14 +15,27 @@
         android:showAsAction="always"
         android:title="@string/seenoncons">
     </item>
--->
-
-    <item
-        android:id="@+id/action_updatedb"
-        android:orderInCategory="90"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/update_db">
-    </item>
-    
+    -->
+    <group android:id="@+id/main_menu_group2" >
+        <item
+            android:id="@+id/refresh_progress"
+            android:showAsAction="ifRoom|withText"
+            android:title="Refresh in progress">
+        </item>
+        <item
+            android:id="@+id/actions"
+            android:icon="@drawable/actions"
+            android:orderInCategory="90"
+            android:showAsAction="ifRoom"
+            android:title="Options">
+            <menu>
+                <item
+                    android:id="@+id/updatedb"
+                    android:icon="@drawable/update"
+                    android:showAsAction="ifRoom"
+                    android:title="Start/Stop Refresh"/>
+            </menu>
+        </item>
+    </group>
 
 </menu>
