@@ -2,6 +2,8 @@ package com.kevin.contactgenerator.Activities;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,6 +18,7 @@ import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -44,6 +47,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -55,7 +59,6 @@ import android.widget.Toast;
 import com.example.contactgenerator.R;
 import com.kevin.contactgenerator.Utilities.DatabaseHelper;
 import com.kevin.contactgenerator.Utilities.UpdateService;
-import com.kevin.contactgenerator.Utilities.UpdateStatusBroadcast;
 
 /**
  * startup activity after welcome screen access to all top-level activities and
@@ -87,17 +90,6 @@ public class MainActivity extends Activity {
 
     // communication for update service to main thread
     private UpdateStatusBroadcast receiver = new UpdateStatusBroadcast();
-    int canceled;
-
-    /**
-     * switch, global to this activity, to tell the async task the service is
-     * done want a way to do this for all activities more generally...
-     */
-    static volatile boolean completed;
-
-    public static void setComplete(boolean boo) {
-        completed = boo;
-    }
 
     // added for navdrawer
     private DrawerLayout mDrawerLayout;
@@ -118,7 +110,9 @@ public class MainActivity extends Activity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_main);
         getWindow().getDecorView().setBackgroundColor(Color.WHITE);
 
@@ -170,11 +164,16 @@ public class MainActivity extends Activity {
     /* Called whenever we call invalidateOptionsMenu() */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        Log.i("MainActivity", "LIFE_FLAG onprep_optionsmenu");
         // If the nav drawer is open, hide action items related to the content
         // view
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        // boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         // menu.findItem(R.id.actions).setVisible(!drawerOpen);
-              
+        if (isMyServiceRunning(UpdateService.class)) {
+            setProgressBarIndeterminateVisibility(true);
+        } else {
+            setProgressBarIndeterminateVisibility(false);
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -191,15 +190,15 @@ public class MainActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.mainnav, menu);
         actions = menu.findItem(R.id.actions);
-        refresh_progress = menu.findItem(R.id.refresh_progress);
-        refresh_progress.setVisible(false);
-        //refresh_progress.setCheckable(false);
+
+        setProgressBarIndeterminateVisibility(false);
 
         return super.onCreateOptionsMenu(menu);
     }
 
-    //learn this <?> stuff -- is it reflection (learn more about reflection anyway)
-    //http://stackoverflow.com/questions/37628/what-is-reflection-and-why-is-it-useful
+    // learn this <?> stuff -- is it reflection (learn more about reflection
+    // anyway)
+    // http://stackoverflow.com/questions/37628/what-is-reflection-and-why-is-it-useful
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (RunningServiceInfo service : manager
@@ -218,11 +217,12 @@ public class MainActivity extends Activity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        System.out.println("click for mainactivit options");
+        Log.i("MainActivity", "LIFE_FLAG click for mainactivit options");
         switch (item.getItemId()) {
 
         case R.id.updatedb:
             if (!isMyServiceRunning(UpdateService.class)) {
+                Log.i("MainActivity", "LIFE_FLAG we start update");
                 new AlertDialog.Builder(this)
                         // .setIcon(android.R.drawable.ic_dialog_alert)
                         .setTitle("Refresh Database?")
@@ -234,10 +234,12 @@ public class MainActivity extends Activity {
                                     public void onClick(DialogInterface dialog,
                                             int which) {
 
-                                        refresh_progress.setVisible(true);
-                                        refresh_progress
-                                                .setActionView(R.layout.progbar);
-                                        new CompleteService().execute();
+                                        setProgressBarIndeterminateVisibility(true);
+                                        
+                                        Intent intent = new Intent(MainActivity.this, UpdateService.class);
+                                        // need below link to ensure service completes before this method...
+                                        // http://stackoverflow.com/questions/16934425/call-an-activity-method-from-a-broadcastreceiver-class
+                                        startService(intent);
                                     }
                                 }).setNegativeButton("No", null).show();
             } else {
@@ -252,6 +254,8 @@ public class MainActivity extends Activity {
                                     @Override
                                     public void onClick(DialogInterface dialog,
                                             int which) {
+
+                                        Log.i("MainActivity", "LIFE_FLAG we cancel update");
                                         // take away visibility and kill thing
                                         // (not this yet, alter):
                                         // refresh.setActionView(R.layout.progbar);
@@ -262,9 +266,40 @@ public class MainActivity extends Activity {
                                         // async task sees that we kill service
                                         // here, and does hiding of progress
                                         // swirl thing etc
-                                        stopService(intent);
-                                        completed = true;
-                                        canceled = 1;
+
+                                        // stop service
+                                        ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+                                        List<RunningAppProcessInfo> runningAppProcesses = am
+                                                .getRunningAppProcesses();
+
+                                        Iterator<RunningAppProcessInfo> iter = runningAppProcesses
+                                                .iterator();
+
+                                        while (iter.hasNext()) {
+                                            RunningAppProcessInfo next = iter
+                                                    .next();
+
+                                            String processName = getPackageName()
+                                                    + ":service";
+
+                                            if (next.processName
+                                                    .equals(processName))
+                                                    //&& completed == false) 
+                                                {
+                                                android.os.Process
+                                                        .killProcess(next.pid);
+                                                
+                                                setProgressBarIndeterminateVisibility(false);
+                                                Toast.makeText(MainActivity.this, "Update cancelled.",
+                                                        Toast.LENGTH_SHORT).show();                                                
+                                                break;
+                                            }
+                                        }
+                                        //
+                                        // the above block stops the service
+                                        // instead of this
+                                        // stopService(intent);
+
                                     }
                                 }).setNegativeButton("No", null).show();
             }
@@ -287,7 +322,7 @@ public class MainActivity extends Activity {
             // (call the method which brings out the addconfrag in the nonconexp
             // frag, so gets added to back stack
             fm.beginTransaction().replace(R.id.fragment_container, addConFrag)
-            .addToBackStack(null).commit();
+                    .addToBackStack(null).commit();
             break;
 
         case R.id.action_delnoncontact:
@@ -306,14 +341,14 @@ public class MainActivity extends Activity {
             fragment.actionBarClick(1);
             break;
 
-            // call frag method with parameter
+        // call frag method with parameter
 
         case R.id.action_seecalls:
 
             NonContactExplorer fragment2 = (NonContactExplorer) getFragmentManager()
                     .findFragmentById(R.id.fragment_container);
             fragment2.actionBarClick(2);
-            
+
             break;
 
         default:
@@ -321,6 +356,35 @@ public class MainActivity extends Activity {
 
         }
         return mDrawerToggle.onOptionsItemSelected(item);
+    }
+    
+
+
+
+    
+    public class UpdateStatusBroadcast extends BroadcastReceiver {
+        // http://stackoverflow.com/questions/20515966/broadcast-receiver-throughtout-the-application
+        // want bcast rcvr available to entire app ... will toast complete no matter
+        // where we are in the app
+        // after starting service
+        // http://www.grokkingandroid.com/android-tutorial-broadcastreceiver/
+        
+        Activity main = null;
+        public void setMainActivityHandler(Activity main){
+            this.main = main;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            System.out.println("Broadcast indeed!");
+            String message = intent.getExtras().getString("message");
+            
+            setProgressBarIndeterminateVisibility(false);
+            Toast.makeText(MainActivity.this, "Update complete.",
+                    Toast.LENGTH_SHORT).show();
+            
+            
+        }
     }
 
     @Override
@@ -339,7 +403,7 @@ public class MainActivity extends Activity {
 
     /**
      * this is called when the application is exited; close the database here
-     * and here only to make concurrent access easier
+     * and here only to make concurrent access easier -- (is this smart?)
      * 
      * (verify in lifecycle that onpause is called anyway before this, or
      * unregister receiver too)
@@ -352,56 +416,6 @@ public class MainActivity extends Activity {
         sqldb.close();
     }
 
-    /* experimental below; adding async task for starting service */
-    // http://developer.android.com/reference/android/os/AsyncTask.html
-    // http://stackoverflow.com/questions/6053602/what-arguments-are-passed-into-asynctaskarg1-arg2-arg3
-    private class CompleteService extends AsyncTask<Void, Void, Void> {
-        // via link above, use on pre-execute to launch the progress bar
-        // want progress bar to have a button for cancelling as well
-        // these should be visible regardless of activity switching until the
-        // service is dead
-        ProgressDialog pdLoading;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        // invoke the service here
-        // look into using onprogressupdate somehow
-        @Override
-        protected Void doInBackground(Void... voids) {
-            Intent intent = new Intent(MainActivity.this, UpdateService.class);
-            // need below link to ensure service completes before this method...
-            // http://stackoverflow.com/questions/16934425/call-an-activity-method-from-a-broadcastreceiver-class
-            startService(intent);
-            while (!completed) {
-            }
-            // switch it back for later use
-            completed = false;
-            return null;
-        }
-
-        // kill the progress bar
-        // need better logging: debug vs error? read below
-        // http://stackoverflow.com/questions/18393888/why-shouldnt-i-use-system-out-println-in-android
-        @Override
-        protected void onPostExecute(Void voids) {
-            super.onPostExecute(voids);
-            refresh_progress.setActionView(null);
-            refresh_progress.setVisible(false);
-
-            if (canceled < 1) {
-                Toast.makeText(MainActivity.this, "Update complete.",
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                canceled = 0;
-                Toast.makeText(MainActivity.this, "Update cancelled.",
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
     /* The click listner for ListView in the navigation drawer */
     private class DrawerItemClickListener implements
@@ -414,12 +428,12 @@ public class MainActivity extends Activity {
     }
 
     private void selectItem(int position) {
-        System.out.println("Entry2");
+
         if (position == 0) {
             // logic to return to home screen -- no fragments covering etc
         }
         if (position == 1) {
-            System.out.println("Entry");
+
             Toast.makeText(MainActivity.this, "Showing noncons...",
                     Toast.LENGTH_SHORT).show();
             /*

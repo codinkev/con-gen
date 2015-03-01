@@ -14,6 +14,7 @@ import com.kevin.contactgenerator.Activities.MainActivity;
  * 
  * @author kevin
  */
+/*
 public class UpdateStatusBroadcast extends BroadcastReceiver {
     // http://stackoverflow.com/questions/20515966/broadcast-receiver-throughtout-the-application
     // want bcast rcvr available to entire app ... will toast complete no matter
@@ -24,12 +25,15 @@ public class UpdateStatusBroadcast extends BroadcastReceiver {
     Activity main = null;
     public void setMainActivityHandler(Activity main){
         this.main = main;
+        
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         System.out.println("Broadcast indeed!");
         String message = intent.getExtras().getString("message");
+        
         //Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
 }
+*/

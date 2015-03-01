@@ -29,11 +29,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.contactgenerator.R;
-import com.kevin.contactgenerator.Models.LoggedCall;
-import com.kevin.contactgenerator.Models.TextMsg;
+import com.kevin.contactgenerator.Entities.LoggedCall;
+import com.kevin.contactgenerator.Entities.TextMsg;
 import com.kevin.contactgenerator.Utilities.CustomAdapter;
 import com.kevin.contactgenerator.Utilities.DatabaseHelper;
-import com.kevin.contactgenerator.Utilities.UpdateStatusBroadcast;
 
 /**
  * explore the data on phone relating to a contact; can also remove contact from
@@ -45,9 +44,6 @@ import com.kevin.contactgenerator.Utilities.UpdateStatusBroadcast;
  */
 public class ContactExplorer extends ListActivity {
 
-    // if we start the service and it finishes this tells us it is done
-    // registering controlled in onresume/onpause
-    private BroadcastReceiver receiver = new UpdateStatusBroadcast();
 
     DatabaseHelper sqldb;
 
@@ -156,15 +152,11 @@ public class ContactExplorer extends ListActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(receiver, new IntentFilter(
-                "com.kevin.contactgenerator.Utilities"));
-        getActionBar().show();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(receiver);
     }
 
 }

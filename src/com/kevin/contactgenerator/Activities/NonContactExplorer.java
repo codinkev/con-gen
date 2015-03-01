@@ -33,11 +33,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.contactgenerator.R;
-import com.kevin.contactgenerator.Models.LoggedCall;
-import com.kevin.contactgenerator.Models.TextMsg;
+import com.kevin.contactgenerator.Entities.LoggedCall;
+import com.kevin.contactgenerator.Entities.TextMsg;
 import com.kevin.contactgenerator.Utilities.CustomAdapter;
 import com.kevin.contactgenerator.Utilities.DatabaseHelper;
-import com.kevin.contactgenerator.Utilities.UpdateStatusBroadcast;
 
 /**
  * explore the data on phone relating to a number after exploring, make decision
@@ -49,11 +48,8 @@ import com.kevin.contactgenerator.Utilities.UpdateStatusBroadcast;
  */
 public class NonContactExplorer extends Fragment {
 
-    // if we start the service and it finishes this tells us it is done
-    // registering controlled in onresume/onpause
-    private BroadcastReceiver receiver = new UpdateStatusBroadcast();
-
-    DatabaseHelper sqldb;
+    //WHY IF THIS IS SINGLETON DO I WANT IT TO BE PRIVATE?  test as public?
+    private static DatabaseHelper sqldb = null;
 
     // number we clicked on
     String number;
@@ -79,6 +75,7 @@ public class NonContactExplorer extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+        System.out.println("Called Oncreate");
         View view = inflater.inflate(R.layout.activity_listactivity, container,
                 false);
 
@@ -175,7 +172,7 @@ public class NonContactExplorer extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-
+        //sqldb.close();
     }
 
 }

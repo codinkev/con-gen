@@ -3,7 +3,7 @@ package com.kevin.contactgenerator.Activities;
 import java.util.ArrayList;
 
 import com.example.contactgenerator.R;
-import com.kevin.contactgenerator.Models.Contact;
+import com.kevin.contactgenerator.Entities.Contact;
 import com.kevin.contactgenerator.Utilities.DatabaseHelper;
 
 import android.app.Fragment;

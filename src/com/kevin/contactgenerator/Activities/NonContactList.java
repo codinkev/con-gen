@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,9 +21,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.contactgenerator.R;
-import com.kevin.contactgenerator.Models.Contact;
+import com.kevin.contactgenerator.Entities.Contact;
 import com.kevin.contactgenerator.Utilities.DatabaseHelper;
-import com.kevin.contactgenerator.Utilities.UpdateStatusBroadcast;
 
 /**
  * Listview displaying all noncontacts- can click on a noncontact to explore
@@ -35,7 +35,9 @@ import com.kevin.contactgenerator.Utilities.UpdateStatusBroadcast;
 //http://stackoverflow.com/questions/16575177/fragment-is-transparent-and-shows-activity-below
 public class NonContactList extends Fragment {
 
-    DatabaseHelper sqldb;
+    //WHY IF THIS IS SINGLETON DO I WANT IT TO BE PRIVATE?  test as public?
+    private static DatabaseHelper sqldb = null;
+    
     ArrayList<String> numberList;
     ArrayAdapter<String> numberAdapter;
     ListView lv;
@@ -77,8 +79,8 @@ public class NonContactList extends Fragment {
             }
         });
         
+        //go back to calling this in onresume???
         refreshLV();
-
         return view;
 
     }
@@ -110,7 +112,7 @@ public class NonContactList extends Fragment {
      */
     public void onResume() {
         super.onResume();
-        refreshLV();
+        //refreshLV();
     }
 
     @Override

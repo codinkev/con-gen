@@ -3,9 +3,9 @@ package com.kevin.contactgenerator.Utilities;
 import java.sql.Date;
 
 import com.kevin.contactgenerator.Activities.MainActivity;
-import com.kevin.contactgenerator.Models.Contact;
-import com.kevin.contactgenerator.Models.LoggedCall;
-import com.kevin.contactgenerator.Models.TextMsg;
+import com.kevin.contactgenerator.Entities.Contact;
+import com.kevin.contactgenerator.Entities.LoggedCall;
+import com.kevin.contactgenerator.Entities.TextMsg;
 
 import android.app.IntentService;
 import android.content.Context;
@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
+import android.util.Log;
 
 
 /**
@@ -33,7 +34,8 @@ public class UpdateService extends IntentService {
  //http://stackoverflow.com/questions/19849963/how-can-i-operate-sqlite-when-i-use-intentservice
  //http://stackoverflow.com/questions/15755785/android-java-intentservice-onhandleintent-does-not-get-called
     
-    DatabaseHelper sqldb;
+    //WHY IF THIS IS SINGLETON DO I WANT IT TO BE PRIVATE?  test as public?
+    private static DatabaseHelper sqldb = null;
     
     public void onCreate() {
         super.onCreate();
@@ -47,20 +49,20 @@ public class UpdateService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         // start the update
-        System.out.println("Intent: "+intent.toString());
-        System.out.println("Initiating update in the service...");
-        
-        sqldb = DatabaseHelper.getInstance(UpdateService.this);
+        Log.i("MainActivity", "LIFE_FLAG Intent: "+intent.toString());
+        Log.i("MainActivity", "LIFE_FLAG Initiating update in the service...");
+      
+        sqldb = DatabaseHelper.getInstance(UpdateService.this);//.getApplicationContext());
         // in case last backup didn't finish
         sqldb.recreateBackups();
         
         // we can't have contacts run asynchronously because noncons depends
         // on it
-        getContacts(UpdateService.this);
+        getContacts(UpdateService.this.getApplicationContext());
         
         // pool these together? performance gain? alternatives?
-        getTextDetails(UpdateService.this);
-        getCallDetails(UpdateService.this);
+        getTextDetails(UpdateService.this.getApplicationContext());
+        getCallDetails(UpdateService.this.getApplicationContext());
         
         //after those are done we can call this...
         sqldb.generateNonContacts();
@@ -68,26 +70,31 @@ public class UpdateService extends IntentService {
         // needs to be immune to interrupt (see last response from below and
         // verify if this is OK practice)
         // http://stackoverflow.com/questions/337903/how-can-you-ensure-in-java-that-a-block-of-code-can-not-be-interrupted-by-any-ot
-        new Thread(new Runnable() {
-            public void run() {
-                System.out.println("CRITICAL POINT");
-                sqldb.switchTables();
-                System.out.println("DONE CRIT POINT");
-            }
-        }).start();
-
-        System.out.println("finished populating database");
+        //new Thread(new Runnable() {
+        //    public void run() {
+        //        System.out.println("CRITICAL POINT");
+        //        //now we cant cancel the thread right before the tables are switched...
+                //MainActivity.setComplete(true);
+        //        sqldb.switchTables();
+        //        System.out.println("DONE CRIT POINT");
+        //    }
+        //}).start();
+        
+        //other option: (no thread)
+        Log.i("MainActivity", "LIFE_FLAG CRITICAL POINT");
+        sqldb.switchTables();
+        Log.i("MainActivity", "LIFE_FLAG DONE CRIT POINT");
+        
+        Log.i("MainActivity", "LIFE_FLAG finished populating database");
         sqldb.close();
-     
-        System.out.println("Done!");
+        Log.i("MainActivity", "LIFE_FLAG Done!");
         
         Intent main_intent = new Intent("com.kevin.contactgenerator.Utilities");
         String message = "Testing";
         main_intent.putExtra("message", message);
         sendBroadcast(main_intent);
         
-        //kill the progress dialog made in the async task (other way to do this?)
-        MainActivity.setComplete(true);
+        Log.i("MainActivity", "LIFE_FLAG service done...");
     }
     
     /**
@@ -116,8 +123,8 @@ public class UpdateService extends IntentService {
                     String phoneNo = pCur
                             .getString(pCur
                                     .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    System.out.println("Name: " + name + ", Phone No: "
-                            + phoneNo);
+                    //System.out.println("Name: " + name + ", Phone No: "
+                    //        + phoneNo);
 
                     // insert each number associated with the contact
                     sqldb.insertContacts(new Contact(name, phoneNo));
@@ -127,7 +134,6 @@ public class UpdateService extends IntentService {
             }
         }
         cursor.close();
-
     }
 
     /**
@@ -151,8 +157,8 @@ public class UpdateService extends IntentService {
             String date = (new Date(Long.valueOf(datehold))).toString();
             String body = cursor.getString(14);
             //System.out.println("TESTING");
-            System.out.println("number: " + number + " contact: " + contact
-                    + " date: " + date + " body: " + body);
+            //System.out.println("number: " + number + " contact: " + contact
+            //        + " date: " + date + " body: " + body);
 
             sqldb.insertTexts(new TextMsg(number, contact, date, body));
 
@@ -208,4 +214,11 @@ public class UpdateService extends IntentService {
         }
         managedCursor.close();
     }
+    
+    @Override
+    public void onDestroy() {        
+        //sqldb.close();
+    }
+
+    
 }

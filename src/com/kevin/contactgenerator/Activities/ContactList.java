@@ -17,9 +17,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.contactgenerator.R;
-import com.kevin.contactgenerator.Models.Contact;
+import com.kevin.contactgenerator.Entities.Contact;
 import com.kevin.contactgenerator.Utilities.DatabaseHelper;
-import com.kevin.contactgenerator.Utilities.UpdateStatusBroadcast;
 
 /**
  * Listview displaying all contacts- can click on a noncontact to explore
@@ -36,7 +35,6 @@ public class ContactList extends Fragment {
 
     // if we start the service and it finishes this tells us it is done
     // registering controlled in onresume/onpause
-    private BroadcastReceiver receiver = new UpdateStatusBroadcast();
 
     /**
      * onCreate - instantiate and display the listview

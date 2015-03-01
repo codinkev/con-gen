@@ -4,13 +4,14 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.kevin.contactgenerator.Models.Contact;
-import com.kevin.contactgenerator.Models.LoggedCall;
-import com.kevin.contactgenerator.Models.TextMsg;
+import com.kevin.contactgenerator.Entities.Contact;
+import com.kevin.contactgenerator.Entities.LoggedCall;
+import com.kevin.contactgenerator.Entities.TextMsg;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -142,9 +143,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             dbInstance = new DatabaseHelper(context.getApplicationContext());
         } else {
             //ensure if we cancelled during an update or whatever that we have a clean slate
-            dbInstance.onCreate(dbInstance.getWritableDatabase());
+            //dbInstance.onCreate(dbInstance.getWritableDatabase());
+            
+            //instead, just check if texts doesnt exist (first dropped in switch)
+            //if not, THEN call oncreate.
+            //if (dbInstance.getTableSize()==null || dbInstance.getTableSize()<1) {
+            //    dbInstance.onCreate(dbInstance.getWritableDatabase());
+            //}
         }
+        
+        //opens it if closed (?)
+        //dbInstance.getWritableDatabase();
+        
         return dbInstance;
+    }
+    
+    public Integer getTableSize() {   
+        int numRows = (int) DatabaseUtils.queryNumEntries(this.getWritableDatabase(), TABLE_texts);               
+        return numRows;        
     }
 
     /**
@@ -167,10 +183,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // creating required tables
+        //temporarily commented...
         db.execSQL(CREATE_TABLE_texts);
         db.execSQL(CREATE_TABLE_calls);
         db.execSQL(CREATE_TABLE_contacts);
         db.execSQL(CREATE_TABLE_noncontacts);
+        
         // backup tables for refreshes
         //db.execSQL(CREATE_BKUP_texts);
         //db.execSQL(CREATE_BKUP_calls);
@@ -307,8 +325,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         try {
             db.insertOrThrow(BKUP_contacts, null, values);
         } catch (SQLException e) {
-            Log.e(DATABASE_NAME, e.toString() + " (" + contact.getNumber()
-                    + ")");
+            //Log.e(DATABASE_NAME, e.toString() + " (" + contact.getNumber()
+            //        + ")");
         }
     }
 
