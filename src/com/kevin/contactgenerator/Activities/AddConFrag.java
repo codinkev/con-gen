@@ -39,11 +39,23 @@ import android.widget.Toast;
 public class AddConFrag extends Fragment {
     // http://stackoverflow.com/questions/14347588/show-hide-fragment-in-android
     // http://www.vogella.com/tutorials/AndroidFragments/article.html
-
+    String number;
+    EditText number_entry;
+    View view;
+    
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frag_addcon, container, false);
-
+        view = inflater.inflate(R.layout.frag_addcon, container, false);
+        number = getArguments().getString("number");
+        System.out.println("ADDCONFRAG -- number: "+number);
+        //setNumber(number);
+        
+        //WHY NPE EXCEPTION HERE: HOW FIND EDITTEXT WITHIN A FRAGMENT IS PROB THE ISSUE!
+        number_entry = (EditText) view.findViewById(
+                R.id.number_entry);
+        number_entry.setText(number);
+        
+        
         Button insert_db = (Button) view.findViewById(R.id.insert_db);
         insert_db.setBackgroundColor(Color.RED);
         insert_db.setTextColor(Color.BLACK);
@@ -53,10 +65,9 @@ public class AddConFrag extends Fragment {
             public void onClick(View arg0) {
 
                 // physically insert the contact with entered fields to db
-                String name = ((EditText) getView().findViewById(
+                String name = ((EditText) view.findViewById(
                         R.id.enter_name)).getText().toString();
-                String number_field = ((EditText) getView().findViewById(
-                        R.id.number_entry)).getText().toString();
+                String number_field = (number_entry).getText().toString();
                 if (name != null && number_field != null) {
                     addContact(name, number_field);
                     Toast.makeText(getActivity(), "Contact Inserted!",
@@ -72,11 +83,11 @@ public class AddConFrag extends Fragment {
     }
 
     // initialize the edittext number entry with the number clicked
-    public void setNumber(String number) {
-        EditText number_entry = (EditText) getView().findViewById(
-                R.id.number_entry);
-        number_entry.setText(number);
-    }
+    //public void setNumber(String number) {
+    //    EditText number_entry = (EditText) getView().findViewById(
+    //            R.id.number_entry);
+    //    number_entry.setText(number);
+    //}
 
     public void setName(String name) {
 
@@ -124,6 +135,10 @@ public class AddConFrag extends Fragment {
 
         DatabaseHelper sqldb = DatabaseHelper.getInstance(getActivity());
         sqldb.recordUpdate(new Contact(name, number_field));
-
+        //incrementally remove this number from noncon list now, and add to contact list, so tables are up to date without needing to refresh
+        //so obviously do this same thing for remove contact, etc (take them off the contact list, just leave off noncon too)
+        //sqldb.        
+        //so basically add this name and number dynamically to contacts
+        //sqldb.insertContacts(new Contact(name, number_field));
     }
 }

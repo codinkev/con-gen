@@ -19,6 +19,7 @@ import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.RawContacts;
 import android.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -128,37 +129,9 @@ public class NonContactExplorer extends Fragment {
         menuinf.inflate(R.menu.newcon, menu);
         menu.setGroupVisible(R.id.main_menu_group, true);
         menu.setGroupVisible(R.id.main_menu_group2, false);
+        menu.setGroupVisible(R.id.main_menu_group3, false);
         return;
-    }
-
-    // change from using numbers
-    public void actionBarClick(int token) {
-        switch (token) {
-        // see texts
-        case 1:
-            System.out.println("Token1");
-            lv.setAdapter(textAdapter);
-            break;
-        // see calls
-        case 2:
-            System.out.println("Token2");
-            lv.setAdapter(callAdapter);
-
-            break;
-
-            
-        // del noncon
-        case 3:
-            System.out.println("Token3");
-            lv.setAdapter(textAdapter);
-            //TODO
-
-            break;
-
-        // addcon is called from mainactivity
-
-        }
-    }
+    }    
 
     // is this the best way to use intentfilter
     // how to do this for every activity without having to re/un-register
@@ -174,5 +147,44 @@ public class NonContactExplorer extends Fragment {
         super.onPause();
         //sqldb.close();
     }
+    
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i("MainActivity", "LIFE_FLAG click for mainactivit options");
+        NonContactExplorer fragment = (NonContactExplorer) getFragmentManager()
+                .findFragmentById(R.id.fragment_container);
+        switch (item.getItemId()) {
+
+        case R.id.action_seetexts:
+            lv.setAdapter(textAdapter);
+            return true;
+
+        // call frag method with parameter
+
+        case R.id.action_seecalls:
+            lv.setAdapter(callAdapter);
+            return true;
+            
+        //case R.id.action_delnoncontact:
+        //    return true;
+            
+        case R.id.action_addcontact:
+            Bundle bundle = new Bundle();
+            bundle.putString("number", number);
+            addConFrag = new AddConFrag();
+            addConFrag.setArguments(bundle);
+            fm.beginTransaction().replace(R.id.fragment_container, addConFrag)
+                    .addToBackStack(null).commit();
+            return true;
+        
+        default:
+            return super.onOptionsItemSelected(item);
+
+        }
+        
+       
+    }
+    
 
 }

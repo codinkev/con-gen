@@ -16,9 +16,11 @@
         android:title="@string/seenoncons">
     </item>
     -->
+
+    <!-- divide between menu groups -->
     <group android:id="@+id/main_menu_group2" >
         <item
-            android:id="@+id/actions"
+            android:id="@+id/actions2"
             android:icon="@drawable/actions"
             android:orderInCategory="90"
             android:showAsAction="ifRoom"
@@ -32,5 +34,6 @@
             </menu>
         </item>
     </group>
+
 
 </menu>

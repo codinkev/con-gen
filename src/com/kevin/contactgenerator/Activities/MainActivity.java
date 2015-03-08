@@ -101,6 +101,7 @@ public class MainActivity extends Activity {
 
     // only pops up on add contact action to create the new contact
     NonContactList nonConFrag;
+    ContactList conFrag;
     FragmentManager fm;
     AddConFrag addConFrag;
 
@@ -159,6 +160,8 @@ public class MainActivity extends Activity {
         fm = getFragmentManager();
         nonConFrag = new NonContactList();
         addConFrag = new AddConFrag();
+        conFrag = new ContactList();
+
     }
 
     /* Called whenever we call invalidateOptionsMenu() */
@@ -194,6 +197,7 @@ public class MainActivity extends Activity {
         setProgressBarIndeterminateVisibility(false);
 
         return super.onCreateOptionsMenu(menu);
+
     }
 
     // learn this <?> stuff -- is it reflection (learn more about reflection
@@ -235,9 +239,12 @@ public class MainActivity extends Activity {
                                             int which) {
 
                                         setProgressBarIndeterminateVisibility(true);
-                                        
-                                        Intent intent = new Intent(MainActivity.this, UpdateService.class);
-                                        // need below link to ensure service completes before this method...
+
+                                        Intent intent = new Intent(
+                                                MainActivity.this,
+                                                UpdateService.class);
+                                        // need below link to ensure service
+                                        // completes before this method...
                                         // http://stackoverflow.com/questions/16934425/call-an-activity-method-from-a-broadcastreceiver-class
                                         startService(intent);
                                     }
@@ -255,7 +262,8 @@ public class MainActivity extends Activity {
                                     public void onClick(DialogInterface dialog,
                                             int which) {
 
-                                        Log.i("MainActivity", "LIFE_FLAG we cancel update");
+                                        Log.i("MainActivity",
+                                                "LIFE_FLAG we cancel update");
                                         // take away visibility and kill thing
                                         // (not this yet, alter):
                                         // refresh.setActionView(R.layout.progbar);
@@ -284,14 +292,17 @@ public class MainActivity extends Activity {
 
                                             if (next.processName
                                                     .equals(processName))
-                                                    //&& completed == false) 
-                                                {
+                                            // && completed == false)
+                                            {
                                                 android.os.Process
                                                         .killProcess(next.pid);
-                                                
+
                                                 setProgressBarIndeterminateVisibility(false);
-                                                Toast.makeText(MainActivity.this, "Update cancelled.",
-                                                        Toast.LENGTH_SHORT).show();                                                
+                                                Toast.makeText(
+                                                        MainActivity.this,
+                                                        "Update cancelled.",
+                                                        Toast.LENGTH_SHORT)
+                                                        .show();
                                                 break;
                                             }
                                         }
@@ -303,87 +314,36 @@ public class MainActivity extends Activity {
                                     }
                                 }).setNegativeButton("No", null).show();
             }
-            break;
-
-        // add other options here for tabs that will be added by fragment (in
-        // onpause/resume of each)
-        // will need to have a method in each fragment acting as a listener
-        // essentially for each button,
-        // since clicking it will trigger a call to the fragment method to
-        // accomplish the action.
-        // ExampleFragment fragment = (ExampleFragment)
-        // getFragmentManager().findFragmentById(R.id.example_fragment);
-        // fragment.<specific_function_name>();
-
-        case R.id.action_addcontact:
-            Toast.makeText(this, "Adding contact...", Toast.LENGTH_SHORT)
-                    .show();
-            // launch the addconfrag, BUT DO IT FROM THE FRAG
-            // (call the method which brings out the addconfrag in the nonconexp
-            // frag, so gets added to back stack
-            fm.beginTransaction().replace(R.id.fragment_container, addConFrag)
-                    .addToBackStack(null).commit();
-            break;
-
-        case R.id.action_delnoncontact:
-            Toast.makeText(this, "Are you sure (implement)...",
-                    Toast.LENGTH_SHORT).show();
-            // Needs to remove all noncon text/calls on phone, removing all
-            // trace of them on phone
-            // TODO
-
-            break;
-
-        case R.id.action_seetexts:
-
-            NonContactExplorer fragment = (NonContactExplorer) getFragmentManager()
-                    .findFragmentById(R.id.fragment_container);
-            fragment.actionBarClick(1);
-            break;
-
-        // call frag method with parameter
-
-        case R.id.action_seecalls:
-
-            NonContactExplorer fragment2 = (NonContactExplorer) getFragmentManager()
-                    .findFragmentById(R.id.fragment_container);
-            fragment2.actionBarClick(2);
-
-            break;
-
+            return true;
         default:
-            break;
-
+            return mDrawerToggle.onOptionsItemSelected(item);
         }
-        return mDrawerToggle.onOptionsItemSelected(item);
+
     }
-    
 
-
-
-    
     public class UpdateStatusBroadcast extends BroadcastReceiver {
         // http://stackoverflow.com/questions/20515966/broadcast-receiver-throughtout-the-application
-        // want bcast rcvr available to entire app ... will toast complete no matter
+        // want bcast rcvr available to entire app ... will toast complete no
+        // matter
         // where we are in the app
         // after starting service
         // http://www.grokkingandroid.com/android-tutorial-broadcastreceiver/
-        
+
         Activity main = null;
-        public void setMainActivityHandler(Activity main){
+
+        public void setMainActivityHandler(Activity main) {
             this.main = main;
         }
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            System.out.println("Broadcast indeed!");
+            System.out.println("Broadcast!");
             String message = intent.getExtras().getString("message");
-            
+
             setProgressBarIndeterminateVisibility(false);
             Toast.makeText(MainActivity.this, "Update complete.",
                     Toast.LENGTH_SHORT).show();
-            
-            
+
         }
     }
 
@@ -416,7 +376,6 @@ public class MainActivity extends Activity {
         sqldb.close();
     }
 
-
     /* The click listner for ListView in the navigation drawer */
     private class DrawerItemClickListener implements
             ListView.OnItemClickListener {
@@ -431,6 +390,14 @@ public class MainActivity extends Activity {
 
         if (position == 0) {
             // logic to return to home screen -- no fragments covering etc
+            // fm.beginTransaction().replace(R.id.fragment_container, null)
+            // .commit();
+
+            int iter = fm.getBackStackEntryCount();
+            for (int i = 1; i <= iter; i++) {
+                fm.popBackStack();
+            }
+
         }
         if (position == 1) {
 
@@ -449,6 +416,8 @@ public class MainActivity extends Activity {
 
             Toast.makeText(MainActivity.this, "Showing contacts",
                     Toast.LENGTH_SHORT).show();
+            fm.beginTransaction().replace(R.id.fragment_container, conFrag)
+                    .addToBackStack(null).commit();
             /*
              * i = new Intent(MainActivity.this, ContactList.class);
              * System.out.println("*******SWITCHING*******"); startActivity(i);

@@ -13,28 +13,27 @@
                     android:id="@+id/action_addcontact"
                     android:orderInCategory="110"
                     android:showAsAction="always"
-                    android:title="@string/add_contact">
-                </item>
-                <item
-                    android:id="@+id/action_delnoncontact"
-                    android:orderInCategory="120"
-                    android:showAsAction="always"
-                    android:title="@string/delete_noncontact">
-                </item>
+                    android:title="@string/add_contact"/>
                 <item
                     android:id="@+id/action_seetexts"
                     android:orderInCategory="100"
                     android:showAsAction="always"
-                    android:title="@string/seetexts">
-                </item>
+                    android:title="@string/seetexts"/>
                 <item
                     android:id="@+id/action_seecalls"
                     android:orderInCategory="90"
                     android:showAsAction="always"
-                    android:title="@string/seecalls">
-                </item>
+                    android:title="@string/seecalls"/>
             </menu>
         </item>
     </group>
 
 </menu>
+
+<!--  
+                <item
+                    android:id="@+id/action_delnoncontact"
+                    android:orderInCategory="120"
+                    android:showAsAction="always"
+                    android:title="@string/delete_noncontact"/>
+ -->

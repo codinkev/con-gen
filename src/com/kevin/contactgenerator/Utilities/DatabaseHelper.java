@@ -516,11 +516,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public ArrayList<Contact> fetchAllContacts() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT name, number " + " FROM "
-                + TABLE_contacts + ";",
+        Cursor c = db.rawQuery("SELECT a.name, a.number" + " FROM "
+                + TABLE_contacts 
+                + " a LEFT JOIN" 
+                + " (SELECT z.number, count(z.number) as relevance_score" 
+                + " FROM " 
+                + " (SELECT y.number from texts y" 
+                + " UNION ALL" 
+                + " SELECT u.number from calls u) z"
+                + " GROUP BY z.number) b"
+                + " on a.number = b.number"
+                + " ORDER BY relevance_score DESC"
+                + ";",
         // + " ORDER BY date;",
                 null);
-
+            
         int nameColumn = c.getColumnIndex("name");
         int numberColumn = c.getColumnIndex("number");
         ArrayList<Contact> contactArray = new ArrayList<Contact>();
@@ -549,6 +559,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         + " (SELECT y.number from texts y " 
         + " UNION ALL" 
         + " SELECT u.number from calls u) z"
+        + " where z.number not in (select number from contacts group by 1)"
         + " GROUP BY z.number ORDER BY count(z.number) DESC",
                 null);
 
@@ -595,6 +606,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         
         db.delete(TABLE_noncontacts, NUMBER + " = " + "'" + contact.getNumber() + "'", null);
     }
+    
+    public void removeContact(Contact contact){
+        
+        this.getWritableDatabase().delete(TABLE_contacts, NUMBER + " = " + "'" + contact.getNumber() + "'", null);
+        
+    };
 
     // http://stackoverflow.com/questions/4557154/android-sqlite-db-when-to-close
     /**

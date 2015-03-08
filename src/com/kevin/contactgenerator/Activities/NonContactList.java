@@ -112,7 +112,6 @@ public class NonContactList extends Fragment {
      */
     public void onResume() {
         super.onResume();
-        //refreshLV();
     }
 
     @Override

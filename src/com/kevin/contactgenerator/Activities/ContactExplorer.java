@@ -3,32 +3,23 @@ package com.kevin.contactgenerator.Activities;
 import java.util.ArrayList;
 
 import android.app.Fragment;
-import android.app.ListActivity;
-import android.content.BroadcastReceiver;
-import android.content.ContentProviderOperation;
-import android.content.ContentProviderResult;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.OperationApplicationException;
-import android.graphics.Color;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.provider.ContactsContract;
-import android.provider.ContactsContract.CommonDataKinds.Phone;
-import android.provider.ContactsContract.CommonDataKinds.StructuredName;
-import android.provider.ContactsContract.Data;
-import android.provider.ContactsContract.RawContacts;
-import android.app.FragmentManager;
+import android.provider.ContactsContract.PhoneLookup;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.ListView;
 
 import com.example.contactgenerator.R;
+import com.kevin.contactgenerator.Entities.Contact;
 import com.kevin.contactgenerator.Entities.LoggedCall;
 import com.kevin.contactgenerator.Entities.TextMsg;
 import com.kevin.contactgenerator.Utilities.CustomAdapter;
@@ -42,19 +33,21 @@ import com.kevin.contactgenerator.Utilities.DatabaseHelper;
  * @version 1.0 7/8/2014
  * 
  */
-public class ContactExplorer extends ListActivity {
-
+public class ContactExplorer extends Fragment {
 
     DatabaseHelper sqldb;
 
-    // number we clicked on
+    // number/name of contact we clicked on
     String number;
+    String name;
 
     // ListView info;
     ArrayAdapter<TextMsg> textAdapter;
     ArrayAdapter<LoggedCall> callAdapter;
     ArrayList<TextMsg> texts;
     ArrayList<LoggedCall> calls;
+
+    ListView lv;
 
     /**
      * onCreate - instantiate multiple adapters want to be able to show texts or
@@ -64,99 +57,125 @@ public class ContactExplorer extends ListActivity {
      * entry form for adding this noncon as a contact
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_con_exp);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        System.out.println("Called Oncreate");
+        View view = inflater.inflate(R.layout.activity_listactivity, container,
+                false);
 
         // receiving the number that was clicked...
-        Intent intent = getIntent();
-        number = intent.getExtras().getString("number");
+        // Intent intent = getActivity().getIntent();
+        // number = intent.getExtras().getString("number");
+        number = getArguments().getString("number");
+        name = getArguments().getString("name");
 
-        sqldb = DatabaseHelper.getInstance(getApplicationContext());
+        sqldb = DatabaseHelper.getInstance(getActivity()
+                .getApplicationContext());
         texts = sqldb.fetchTexts(number);
         calls = sqldb.fetchCalls(number);
 
-        getListView().setVerticalScrollBarEnabled(true);
-        getListView().setClickable(true);
-        getListView().setItemsCanFocus(false);
+        lv = (ListView) view.findViewById(R.id.list1);
+        lv.setVerticalScrollBarEnabled(true);
+        lv.setClickable(true);
+        lv.setItemsCanFocus(false);
 
-        textAdapter = new CustomAdapter<TextMsg>(ContactExplorer.this,
-                android.R.layout.simple_list_item_1, texts, "TEXTS");
-        callAdapter = new CustomAdapter<LoggedCall>(ContactExplorer.this,
-                android.R.layout.simple_list_item_1, calls, "CALLS");
+        textAdapter = new CustomAdapter<TextMsg>(getActivity()
+                .getApplicationContext(), android.R.layout.simple_list_item_1,
+                texts, "TEXTS");
+        callAdapter = new CustomAdapter<LoggedCall>(getActivity()
+                .getApplicationContext(), android.R.layout.simple_list_item_1,
+                calls, "CALLS");
 
         // default to showing texts
-        setListAdapter(textAdapter);
+        lv.setAdapter(textAdapter);
 
-        // put onitemclicklistener for LV here - show full info for text/call
-        // clicked on
-
-        Toast.makeText(
-                this,
-                "Currently showing texts for this contact; "
-                        + "choose an from the actionbar for other options",
-                Toast.LENGTH_SHORT).show();
-
+        setHasOptionsMenu(true);
+        return view;
     }
 
-    /**
-     * Inflate the menu; this adds items to the action bar if it is present.
-     * 
-     * @return boolean indicates if successful
-     */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.curcon, menu);
-        return true;
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuinf) {
+        System.out.println("conexp options!");
+
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuinf = getActivity().getMenuInflater();
+        menuinf.inflate(R.menu.curcon, menu);
+        menu.setGroupVisible(R.id.main_menu_group3, true);
+        menu.setGroupVisible(R.id.main_menu_group2, false);
+        menu.setGroupVisible(R.id.main_menu_group, false);
+        return;
     }
 
-    /**
-     * Dictates behavior based on actionbar clicks
-     * 
-     * @return boolean indicates if successful
-     */
+    // is this the best way to use intentfilter
+    // how to do this for every activity without having to re/un-register
+    @Override
+    public void onResume() {
+        super.onResume();
+        // toggle options stuff on/off in all frags like this...
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // sqldb.close();
+    }
+
+    public void deleteContact() {
+            System.out.println("DELCON -- "+number+" "+name);
+            Uri contactUri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
+            Cursor cur = getActivity().getApplicationContext().getContentResolver().query(contactUri, null, null, null, null);
+            try {
+            if (cur.moveToFirst()) {
+            do {
+            if (cur.getString(cur.getColumnIndex(PhoneLookup.DISPLAY_NAME)).equalsIgnoreCase(name)) {
+            System.out.println("DELCON -- name is: "+name);
+            String lookupKey = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY));
+            Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey);
+            //System.out.println("ROWS DELETED: "+getActivity().getApplicationContext().getContentResolver().delete(uri, null, null));   
+            int rows;
+            if ((rows=getActivity().getApplicationContext().getContentResolver().delete(uri, null, null))>=1) {
+                System.out.println("(FIRST TIME) ROWS DELETED: "+rows);
+                sqldb.removeContact(new Contact(name, number));
+            }
+            System.out.println("(SECOND TIME) ROWS DELETED: "+rows);
+            cur.moveToLast();
+            } else {}
+            } while (cur.moveToNext());
+            }
+            } catch (Exception e) {}
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i("MainActivity", "LIFE_FLAG click for mainactivit options");
+        ContactExplorer fragment = (ContactExplorer) getFragmentManager()
+                .findFragmentById(R.id.fragment_container);
         switch (item.getItemId()) {
-        // action bar option to add contact selected
-        case R.id.action_delcontact:
-            Toast.makeText(this, "Removing contact...", Toast.LENGTH_SHORT)
-                    .show();
-            // http://stackoverflow.com/questions/527216/how-to-remove-a-contact-programmatically-in-android
-            // deleteContact();
 
-            break;
-        // action bar option to see texts for this contact selected
         case R.id.action_seetexts:
-            Toast.makeText(ContactExplorer.this, "Showing texts for " + number,
-                    Toast.LENGTH_SHORT).show();
-            setListAdapter(textAdapter);
+            Log.i("MainActivity", "curcon seetexts selected");
+            lv.setAdapter(textAdapter);
+            return true;
 
-            break;
-        // action bar option to see calls for this contact selected
+            // call frag method with parameter
+
         case R.id.action_seecalls:
-            Toast.makeText(ContactExplorer.this, "Showing calls for " + number,
-                    Toast.LENGTH_SHORT).show();
-            setListAdapter(callAdapter);
+            Log.i("MainActivity", "curcon seecalls selected");
+            lv.setAdapter(callAdapter);
+            return true;
 
-            break;
+        case R.id.action_delcontact:
+            Log.i("MainActivity", "curcon delnoncon selected");
+            deleteContact();
+            return true;
+
         default:
-            break;
+            return super.onOptionsItemSelected(item);
+
         }
-        return true;
-    }
+        // return super.onOptionsItemSelected(item);
 
-    /**
-     * BroadcastReceiver registration
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 
 }

@@ -33,38 +33,35 @@ public final class R {
         public static final int update=0x7f020005;
     }
     public static final class id {
-        public static final int action_addcontact=0x7f090010;
-        public static final int action_delcontact=0x7f090009;
-        public static final int action_delnoncontact=0x7f090011;
+        public static final int action_addcontact=0x7f090011;
+        public static final int action_delcontact=0x7f09000c;
         public static final int action_seecalls=0x7f09000b;
         public static final int action_seetexts=0x7f09000a;
-        public static final int actions=0x7f09000d;
-        public static final int addConFrag=0x7f090005;
+        public static final int actions=0x7f090009;
+        public static final int actions2=0x7f09000e;
         public static final int drawer_layout=0x7f090001;
-        public static final int enter_name=0x7f090006;
+        public static final int enter_name=0x7f090005;
         public static final int fragment_container=0x7f090002;
         public static final int imageView1=0x7f090003;
-        public static final int insert_db=0x7f090008;
+        public static final int insert_db=0x7f090007;
         public static final int left_drawer=0x7f090004;
         public static final int list1=0x7f090000;
-        public static final int main_menu_group=0x7f09000f;
-        public static final int main_menu_group2=0x7f09000c;
-        public static final int number_entry=0x7f090007;
-        public static final int updatedb=0x7f09000e;
+        public static final int main_menu_group=0x7f090010;
+        public static final int main_menu_group2=0x7f09000d;
+        public static final int main_menu_group3=0x7f090008;
+        public static final int number_entry=0x7f090006;
+        public static final int updatedb=0x7f09000f;
     }
     public static final class layout {
-        public static final int activity_con_exp=0x7f030000;
-        public static final int activity_listactivity=0x7f030001;
-        public static final int activity_main=0x7f030002;
-        public static final int activity_noncon_exp=0x7f030003;
-        public static final int drawer_list_item=0x7f030004;
-        public static final int frag_addcon=0x7f030005;
+        public static final int activity_listactivity=0x7f030000;
+        public static final int activity_main=0x7f030001;
+        public static final int drawer_list_item=0x7f030002;
+        public static final int frag_addcon=0x7f030003;
     }
     public static final class menu {
-        public static final int blank=0x7f080000;
-        public static final int curcon=0x7f080001;
-        public static final int mainnav=0x7f080002;
-        public static final int newcon=0x7f080003;
+        public static final int curcon=0x7f080000;
+        public static final int mainnav=0x7f080001;
+        public static final int newcon=0x7f080002;
     }
     public static final class string {
         public static final int action_settings=0x7f060001;

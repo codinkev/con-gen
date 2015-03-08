@@ -9,8 +9,10 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -21,8 +23,8 @@ import com.kevin.contactgenerator.Entities.Contact;
 import com.kevin.contactgenerator.Utilities.DatabaseHelper;
 
 /**
- * Listview displaying all contacts- can click on a noncontact to explore
- * data available on phone and ultimately add it as a contact if desired
+ * Listview displaying all contacts- can click on a noncontact to explore data
+ * available on phone and ultimately add it as a contact if desired
  * 
  * @author kevin
  * @version 1.0 7/8/2014
@@ -30,87 +32,86 @@ import com.kevin.contactgenerator.Utilities.DatabaseHelper;
 public class ContactList extends Fragment {
 
     DatabaseHelper sqldb;
-    ArrayList<String> numberList;
-    ArrayAdapter<String> numberAdapter;
-
-    // if we start the service and it finishes this tells us it is done
-    // registering controlled in onresume/onpause
+    ArrayList<Contact> numberList;
+    ArrayAdapter<Contact> numberAdapter;
+    ContactExplorer conExpFrag;
+    ListView lv;
 
     /**
      * onCreate - instantiate and display the listview
      */
-/*
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_listactivity);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_listactivity, container,
+                false);
 
-        refreshLV();
+        conExpFrag = new ContactExplorer();
 
-        getListView().setVerticalScrollBarEnabled(true);
-        getListView().setClickable(true);
-        getListView().setItemsCanFocus(false);
-        getListView().setOnItemClickListener(new OnItemClickListener() {
+        lv = (ListView) view.findViewById(R.id.list1);
+        lv.setVerticalScrollBarEnabled(true);
+        lv.setClickable(true);
+        lv.setItemsCanFocus(false);
+        lv.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView a, View v, int position, long id) {
                 System.out.println("an item has been clicked");
+                String number = numberList.get(position).getNumber();
+                String name = numberList.get(position).getName();
+                // rather than passing number in the intent used to start the
+                // explorer activity, do it when you start the fragment with a
+                // bundle or something
+                Bundle bundle = new Bundle();
+                bundle.putString("number", number);
+                bundle.putString("name", name);
+                
+                conExpFrag.setArguments(bundle);
 
-                String number = numberList.get(position);
-                Intent i = new Intent(ContactList.this, ContactExplorer.class);
-
-                i.putExtra("number", number);
-                startActivity(i);
+                getActivity().getFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, conExpFrag)
+                        .addToBackStack(null).commit();
             }
         });
 
+        // go back to calling this in onresume???
+        refreshLV();
+        return view;
+
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.blank, menu);
-        return true;
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
     }
-*/
+
     /**
      * refresh LV if any changes made by re-fetching data
      */
-/*
     public void refreshLV() {
-        sqldb = DatabaseHelper.getInstance(getApplicationContext());
+        sqldb = DatabaseHelper.getInstance(getActivity()
+                .getApplicationContext());
 
-        numberList = new ArrayList<String>();
+        numberList = new ArrayList<Contact>();
         for (Contact c : sqldb.fetchAllContacts()) {
-            if (!(c.toString() == null))
-                numberList.add(c.toString());
+            numberList.add(c);
         }
 
-        numberAdapter = new ArrayAdapter<String>(ContactList.this,
-                android.R.layout.simple_list_item_1, numberList);
+        numberAdapter = new ArrayAdapter<Contact>(getActivity()
+                .getApplicationContext(), android.R.layout.simple_list_item_1,
+                numberList);
         numberAdapter.notifyDataSetChanged();
-        getListView().setAdapter(numberAdapter);
+        lv.setAdapter(numberAdapter);
 
     }
-*/
-    /**
-     * un/re-register receiver as this activity becomes in/active
-     */
-/*
+
     public void onResume() {
         super.onResume();
-
-        refreshLV();
-
-        registerReceiver(receiver, new IntentFilter(
-                "com.kevin.contactgenerator.Utilities"));
-        getActionBar().show();
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
-        unregisterReceiver(receiver);
+
     }
-*/
-    
+
 }

@@ -1,19 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?><menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item android:title="@string/delete_contact"
-        android:id="@+id/action_delcontact"
-        android:orderInCategory="110"
-        android:showAsAction="always">
-    </item>
-    <item android:title="@string/seetexts"
-        android:id="@+id/action_seetexts"
-        android:orderInCategory="100"
-        android:showAsAction="always">
-    </item>
-    <item android:title="@string/seecalls"
-        android:id="@+id/action_seecalls"
-        android:orderInCategory="90"
-        android:showAsAction="always">
-    </item>
+    <!-- new stuff below for contactlist options etc -->
+    <group android:id="@+id/main_menu_group3" >
+        <item
+            android:id="@+id/actions"
+            android:icon="@drawable/actions"
+            android:orderInCategory="90"
+            android:showAsAction="ifRoom"
+            android:title="Options">
+            <menu>
+                <item
+                    android:id="@+id/action_seetexts"
+                    android:orderInCategory="100"
+                    android:showAsAction="always"
+                    android:title="@string/seetexts">
+                </item>
+                <item
+                    android:id="@+id/action_seecalls"
+                    android:orderInCategory="90"
+                    android:showAsAction="always"
+                    android:title="@string/seecalls">
+                </item>
+                <item
+                    android:id="@+id/action_delcontact"
+                    android:orderInCategory="110"
+                    android:showAsAction="always"
+                    android:title="@string/delete_contact">
+                </item>
+            </menu>
+        </item>
+    </group>
 
 </menu>
