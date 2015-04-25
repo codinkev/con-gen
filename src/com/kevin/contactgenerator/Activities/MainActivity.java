@@ -395,7 +395,7 @@ public class MainActivity extends Activity {
 
             int iter = fm.getBackStackEntryCount();
             for (int i = 1; i <= iter; i++) {
-                fm.popBackStack();
+                fm.popBackStack(); 
             }
 
         }

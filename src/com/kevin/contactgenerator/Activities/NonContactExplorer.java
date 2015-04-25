@@ -19,6 +19,8 @@ import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.RawContacts;
 import android.app.FragmentManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -61,7 +63,7 @@ public class NonContactExplorer extends Fragment {
     ArrayList<TextMsg> texts;
     ArrayList<LoggedCall> calls;
     ListView lv;
-
+    EditText inputSearch;
     // only pops up on add contact action to create the new contact
     AddConFrag addConFrag;
     FragmentManager fm;
@@ -117,7 +119,40 @@ public class NonContactExplorer extends Fragment {
         // fm.beginTransaction().hide(addConFrag).commit();
 
         setHasOptionsMenu(true);
+        
+        inputSearch = (EditText) view.findViewById(R.id.inputSearch);
+        inputSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence cs, int arg1, int arg2,
+                    int arg3) {
+                // When user changed the Text
+                // this needs to become a function which can filter the texts
+                // and calls ... use contactlist as an example (though that
+                // filters numbers only, same concepts are used)
+                refreshLV(cs);
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1,
+                    int arg2, int arg3) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+            }
+        });
+
         return view;
+    }
+    
+    public void refreshLV(CharSequence cs) {
+        sqldb = DatabaseHelper.getInstance(getActivity()
+                .getApplicationContext());
+        
+        ((ArrayAdapter)lv.getAdapter()).getFilter().filter(cs);
+        
+        ((ArrayAdapter)lv.getAdapter()).notifyDataSetChanged();
+        lv.setAdapter(((ArrayAdapter)lv.getAdapter()));
     }
     
     @Override

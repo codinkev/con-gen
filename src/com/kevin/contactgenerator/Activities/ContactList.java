@@ -4,18 +4,16 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.ListActivity;
-import android.content.BroadcastReceiver;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.example.contactgenerator.R;
@@ -36,7 +34,8 @@ public class ContactList extends Fragment {
     ArrayAdapter<Contact> numberAdapter;
     ContactExplorer conExpFrag;
     ListView lv;
-
+    EditText inputSearch;
+    
     /**
      * onCreate - instantiate and display the listview
      */
@@ -74,9 +73,24 @@ public class ContactList extends Fragment {
         });
 
         // go back to calling this in onresume???
-        refreshLV();
+        refreshLV(null);
+        
+        inputSearch = (EditText) view.findViewById(R.id.inputSearch);
+        inputSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+                // When user changed the Text
+                refreshLV(cs);  
+            }
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                    int arg3) {
+            }
+            @Override
+            public void afterTextChanged(Editable arg0) {
+            }
+        });
         return view;
-
     }
 
     @Override
@@ -87,7 +101,7 @@ public class ContactList extends Fragment {
     /**
      * refresh LV if any changes made by re-fetching data
      */
-    public void refreshLV() {
+    public void refreshLV(CharSequence cs) {
         sqldb = DatabaseHelper.getInstance(getActivity()
                 .getApplicationContext());
 
@@ -97,8 +111,13 @@ public class ContactList extends Fragment {
         }
 
         numberAdapter = new ArrayAdapter<Contact>(getActivity()
-                .getApplicationContext(), android.R.layout.simple_list_item_1,
+                .getApplicationContext(), R.layout.search_item,
+                R.id.search_item,
+                //android.R.layout.simple_list_item_1,
                 numberList);
+        
+        numberAdapter.getFilter().filter(cs);
+        
         numberAdapter.notifyDataSetChanged();
         lv.setAdapter(numberAdapter);
 

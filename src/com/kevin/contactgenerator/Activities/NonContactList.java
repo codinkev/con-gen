@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.example.contactgenerator.R;
@@ -42,7 +45,8 @@ public class NonContactList extends Fragment {
     ArrayAdapter<String> numberAdapter;
     ListView lv;
     NonContactExplorer nonConExpFrag;
-
+    EditText inputSearch;
+    
     /**
      * onCreate - instantiate and display the listview
      */
@@ -54,10 +58,13 @@ public class NonContactList extends Fragment {
         
         nonConExpFrag = new NonContactExplorer();
         
-        lv = (ListView) view.findViewById(R.id.list1);   
+        lv = (ListView) view.findViewById(R.id.list1);
+
         lv.setVerticalScrollBarEnabled(true);
         lv.setClickable(true);
         lv.setItemsCanFocus(false);
+        //lv.setTextFilterEnabled(true);
+        
         lv.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView a, View v, int position, long id) {
@@ -80,7 +87,40 @@ public class NonContactList extends Fragment {
         });
         
         //go back to calling this in onresume???
-        refreshLV();
+        System.out.println("Called7...");
+        refreshLV(null);
+        /*
+        sqldb = DatabaseHelper.getInstance(getActivity()
+                .getApplicationContext());
+        numberList = new ArrayList<String>();
+        for (String number : sqldb.fetchAllNonContacts()) {
+            numberList.add(number);
+        }
+        numberAdapter = new ArrayAdapter<String>(getActivity()
+                .getApplicationContext(), R.layout.search_item,
+                R.id.search_item,
+                //android.R.layout.simple_list_item_1,
+                numberList);
+        numberAdapter.notifyDataSetChanged();
+        lv.setAdapter(numberAdapter);
+        */
+        
+        inputSearch = (EditText) view.findViewById(R.id.inputSearch);
+        inputSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+                // When user changed the Text
+                refreshLV(cs);  
+            }
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                    int arg3) {
+            }
+            @Override
+            public void afterTextChanged(Editable arg0) {
+            }
+        });
+        
         return view;
 
     }
@@ -93,18 +133,28 @@ public class NonContactList extends Fragment {
     /**
      * refresh LV if any changes made by re-fetching data
      */
-    public void refreshLV() { 
-            sqldb = DatabaseHelper.getInstance(getActivity().getApplicationContext());
-            
-            numberList = new ArrayList<String>();
-            numberList = sqldb.fetchAllNonContacts();
-            
-            // http://stackoverflow.com/questions/8215308/using-context-in-fragment
-            numberAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),
-                    android.R.layout.simple_list_item_1, numberList);
-            numberAdapter.notifyDataSetChanged();
-            
-            lv.setAdapter(numberAdapter);
+    public void refreshLV(CharSequence cs) { 
+        System.out.println("Called8...");
+        //only commented this because added block to top which instantiates
+        sqldb = DatabaseHelper.getInstance(getActivity()
+                .getApplicationContext());
+
+        numberList = new ArrayList<String>();
+        for (String number : sqldb.fetchAllNonContacts()) {
+            numberList.add(number);
+            System.out.println(number);
+        }
+
+        numberAdapter = new ArrayAdapter<String>(getActivity()
+                .getApplicationContext(), R.layout.search_item,
+                R.id.search_item,
+                //android.R.layout.simple_list_item_1,
+                numberList);
+        
+        numberAdapter.getFilter().filter(cs);
+        
+        numberAdapter.notifyDataSetChanged();
+        lv.setAdapter(numberAdapter);
     }
 
     /**

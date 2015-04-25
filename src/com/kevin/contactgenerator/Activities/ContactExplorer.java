@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.PhoneLookup;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,7 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.contactgenerator.R;
 import com.kevin.contactgenerator.Entities.Contact;
@@ -48,6 +52,7 @@ public class ContactExplorer extends Fragment {
     ArrayList<LoggedCall> calls;
 
     ListView lv;
+    EditText inputSearch;
 
     /**
      * onCreate - instantiate multiple adapters want to be able to show texts or
@@ -90,7 +95,40 @@ public class ContactExplorer extends Fragment {
         lv.setAdapter(textAdapter);
 
         setHasOptionsMenu(true);
+
+        inputSearch = (EditText) view.findViewById(R.id.inputSearch);
+        inputSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence cs, int arg1, int arg2,
+                    int arg3) {
+                // When user changed the Text
+                // this needs to become a function which can filter the texts
+                // and calls ... use contactlist as an example (though that
+                // filters numbers only, same concepts are used)
+                refreshLV(cs);
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1,
+                    int arg2, int arg3) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+            }
+        });
+
         return view;
+    }
+    
+    public void refreshLV(CharSequence cs) {
+        sqldb = DatabaseHelper.getInstance(getActivity()
+                .getApplicationContext());
+        
+        ((ArrayAdapter)lv.getAdapter()).getFilter().filter(cs);
+        
+        ((ArrayAdapter)lv.getAdapter()).notifyDataSetChanged();
+        lv.setAdapter(((ArrayAdapter)lv.getAdapter()));
     }
 
     @Override
@@ -122,28 +160,47 @@ public class ContactExplorer extends Fragment {
     }
 
     public void deleteContact() {
-            System.out.println("DELCON -- "+number+" "+name);
-            Uri contactUri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
-            Cursor cur = getActivity().getApplicationContext().getContentResolver().query(contactUri, null, null, null, null);
-            try {
+        System.out.println("DELCON -- " + number + " " + name);
+        Uri contactUri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI,
+                Uri.encode(number));
+        Cursor cur = getActivity().getApplicationContext().getContentResolver()
+                .query(contactUri, null, null, null, null);
+        int rows = 0;
+        try {
             if (cur.moveToFirst()) {
-            do {
-            if (cur.getString(cur.getColumnIndex(PhoneLookup.DISPLAY_NAME)).equalsIgnoreCase(name)) {
-            System.out.println("DELCON -- name is: "+name);
-            String lookupKey = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY));
-            Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey);
-            //System.out.println("ROWS DELETED: "+getActivity().getApplicationContext().getContentResolver().delete(uri, null, null));   
-            int rows;
-            if ((rows=getActivity().getApplicationContext().getContentResolver().delete(uri, null, null))>=1) {
-                System.out.println("(FIRST TIME) ROWS DELETED: "+rows);
-                sqldb.removeContact(new Contact(name, number));
+                do {
+                    if (cur.getString(
+                            cur.getColumnIndex(PhoneLookup.DISPLAY_NAME))
+                            .equalsIgnoreCase(name)) {
+                        System.out.println("DELCON -- name is: " + name);
+                        String lookupKey = cur
+                                .getString(cur
+                                        .getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY));
+                        Uri uri = Uri.withAppendedPath(
+                                ContactsContract.Contacts.CONTENT_LOOKUP_URI,
+                                lookupKey);
+                        // System.out.println("ROWS DELETED: "+getActivity().getApplicationContext().getContentResolver().delete(uri,
+                        // null, null));
+                        if ((rows = getActivity().getApplicationContext()
+                                .getContentResolver().delete(uri, null, null)) >= 1) {
+                            System.out.println("(FIRST TIME) ROWS DELETED: "
+                                    + rows);
+                            sqldb.removeContact(new Contact(name, number));
+                        }
+                        System.out.println("(SECOND TIME) ROWS DELETED: "
+                                + rows);
+                        cur.moveToLast();
+                    } else {
+                    }
+                } while (cur.moveToNext());
             }
-            System.out.println("(SECOND TIME) ROWS DELETED: "+rows);
-            cur.moveToLast();
-            } else {}
-            } while (cur.moveToNext());
-            }
-            } catch (Exception e) {}
+        } catch (Exception e) {
+        } finally {
+            Toast.makeText(getActivity().getApplicationContext(),
+                    "" + rows + " contact(s) deleted.", Toast.LENGTH_SHORT)
+                    .show();
+            getFragmentManager().popBackStack();
+        }
     }
 
     @Override

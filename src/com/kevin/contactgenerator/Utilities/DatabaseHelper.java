@@ -515,6 +515,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return ArrayList<Contact> list of all contacts in the database
      */
     public ArrayList<Contact> fetchAllContacts() {
+        System.out.println("Called...");
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor c = db.rawQuery("SELECT a.name, a.number" + " FROM "
                 + TABLE_contacts 
@@ -534,15 +535,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int nameColumn = c.getColumnIndex("name");
         int numberColumn = c.getColumnIndex("number");
         ArrayList<Contact> contactArray = new ArrayList<Contact>();
-
+        System.out.println("Called2...");
         if (c.moveToFirst()) {
+            System.out.println("Called3...");
             do {
+                System.out.println("Called4...");
                 Contact record = new Contact(c.getString(nameColumn),
                         c.getString(numberColumn));
                 contactArray.add(record);
             } while (c.moveToNext());
         }
         c.close();
+        System.out.println("Called5...");
         return contactArray;
     }
 

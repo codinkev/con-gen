@@ -70,11 +70,14 @@ public class AddConFrag extends Fragment {
                 String number_field = (number_entry).getText().toString();
                 if (name != null && number_field != null) {
                     addContact(name, number_field);
-                    Toast.makeText(getActivity(), "Contact Inserted!",
+                    Toast.makeText(getActivity().getApplicationContext(), "Contact Inserted!",
                             Toast.LENGTH_SHORT).show();
-                    getActivity().finish();
+                    //from here I should navigate user to the non_contacts screen ...
+                    getFragmentManager().popBackStack(); 
+                    getFragmentManager().popBackStack(); 
+                    
                 } else {
-                    Toast.makeText(getActivity(), "NO NULLS ALLOWED",
+                    Toast.makeText(getActivity().getApplicationContext(), "NO NULLS ALLOWED",
                             Toast.LENGTH_SHORT).show();
                 }
             }
